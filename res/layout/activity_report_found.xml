@@ -1,0 +1,101 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageButton
+        android:id="@+id/btn_foundgps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/edtxt_foundloc"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/edtxt_foundloc"
+        android:contentDescription="@string/foundgps_desc"
+        android:src="@drawable/ic_action_location_found" />
+
+    <EditText
+        android:id="@+id/edtxt_foundname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:hint="@string/foundname_hint" />
+
+    <Spinner
+        android:id="@+id/spinner_foundcat"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/edtxt_foundname"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/txt_founddate_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/spinner_foundcat"
+        android:text="@string/founddate_label"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/LightGrey" />
+
+    <TextView
+        android:id="@+id/txt_founddate"
+        style="@android:style/Widget.DeviceDefault.Light.Spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/txt_founddate_label"
+        android:layout_toLeftOf="@+id/txt_foundtime"
+        android:text="Wed,Jan 01,2014" />
+
+    <EditText
+        android:id="@+id/edtxt_foundloc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/txt_founddate"
+        android:layout_toLeftOf="@+id/btn_foundgps"
+        android:ems="10"
+        android:hint="@string/foundloc_hint" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/edtxt_foundemail"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/btn_foundgps"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:hint="@string/foundemail_hint"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/edtxt_founddesc"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/edtxt_foundemail"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:hint="@string/founddesc_hint"
+        android:inputType="textMultiLine"
+        android:lines="2" />
+
+    <TextView
+        android:id="@+id/txt_foundtime"
+        style="@android:style/Widget.DeviceDefault.Light.Spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_foundgps"
+        android:layout_alignParentRight="true"
+        android:text="10:10AM" />
+
+</RelativeLayout>

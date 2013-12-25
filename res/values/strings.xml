@@ -17,7 +17,7 @@
 
     <string name="title_fragment_profile">Profile</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_fragment_front_page">Front Page</string>
+    <string name="title_fragment_front_page">Found News</string>
     <string name="title_fragment_lost_thing">My Lost Thing</string>
     <string name="title_fragment_found_thing">My Found Things</string>
     <string name="title_fragment_report_found">Report Found</string>
@@ -26,9 +26,23 @@
     <string name="search_hint">Search Lost/Found</string>
     <string name="title_activity_search_result">Search Result</string>
     <string name="action_refresh">Refresh</string>
+
     <string-array name="spinner_names">
-        <item >Found</item>
-        <item >Lost</item>
+        <item>Found</item>
+        <item>Lost</item>
+    </string-array>
+
+    <string name="title_activity_fplost_fragment">Lost News</string>
+    <string name="foundname_hint">Name</string>
+    <string name="foundloc_hint">Location GPS</string>
+    <string name="foundgps_desc">Get GPS Location</string>
+    <string name="foundemail_hint">E-mail</string>
+    <string name="founddesc_hint">Description</string>
+    <string name="founddate_label">Found Date</string>
+    <string-array name="foundcat_strings">
+        <item >&lt;Category&gt;</item>
+        <item >Smartphone</item>
+        <item >Wallet</item>
     </string-array>
 
 </resources>

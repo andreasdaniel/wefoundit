@@ -45,29 +45,29 @@ public class SearchResultActivity extends Activity {
 		
 	}
 	
-	 @Override
-	    protected void onNewIntent(Intent intent) {
-	        setIntent(intent);
-	        handleIntent(intent);
-	    }
-	 
-	    /**
-	     * Handling intent data
-	     */
-	    private void handleIntent(Intent intent) {
-	        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-	            String query = intent.getStringExtra(SearchManager.QUERY);
-	 
-	            /**
-	             * Use this query to display search results like 
-	             * 1. Getting the data from SQLite and showing in listview 
-	             * 2. Making webrequest and displaying the data 
-	             * For now we just display the query only
-	             */
-	            mQuery.setText("Search Query: " + query);
-	 
-	        }
-	 
-	    }
+	@Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+ 
+    /**
+     * Handling intent data
+     */
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+ 
+            /**
+             * Use this query to display search results like 
+             * 1. Getting the data from SQLite and showing in listview 
+             * 2. Making webrequest and displaying the data 
+             * For now we just display the query only
+             */
+            mQuery.setText("Search Query: " + query);
+ 
+        }
+ 
+    }
 
 }

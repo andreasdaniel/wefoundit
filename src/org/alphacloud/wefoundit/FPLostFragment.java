@@ -6,12 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class FrontPageFragment extends Fragment {
+
+public class FPLostFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		View rootView = inflater.inflate(R.layout.fragment_front_page, container, false);
+		View rootView = inflater.inflate(R.layout.fragment_fp_lost, container, false);
         
         return rootView;
 	}

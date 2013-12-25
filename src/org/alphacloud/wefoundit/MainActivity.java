@@ -39,8 +39,8 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		createSideBarMenu(savedInstanceState);
 		createFPSpinner();
+		createSideBarMenu(savedInstanceState);
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		isFrontPage = false;
 		switch (position) {
 		case 0:
-			fragment = new FrontPageFragment();
+			changeSpinnerMenu(0);
 			isFrontPage = true;
 			break;
 		case 1:
@@ -126,7 +126,8 @@ public class MainActivity extends Activity implements OnNavigationListener {
 			fragment = new FoundThingFragment();
 			break;
 		case 4:
-			fragment = new ReportFoundFragment();
+			Intent intent = new Intent(getApplicationContext(), ReportFoundActivity.class);
+			startActivity(intent);
 			break;
 		case 5:
 			fragment = new ReportLostFragment();
@@ -146,9 +147,18 @@ public class MainActivity extends Activity implements OnNavigationListener {
 			mDrawerLayout.closeDrawer(mDrawerList);
 			
 			toggleSpinner();
-		} else {
+		} 
+		else if(isFrontPage) {
+			mDrawerList.setItemChecked(position, true);
+			mDrawerList.setSelection(position);
+			setTitle(mMenuNames[position]);
+			mDrawerLayout.closeDrawer(mDrawerList);
+			
+			toggleSpinner();
+		}
+		else {
 			// error in creating fragment
-			Log.e("MainActivity", "Error in creating fragment");
+			//Log.e("MainActivity", "Error in creating fragment");
 		}
 	}
 	
@@ -168,10 +178,10 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		Fragment fragment = null;
 		switch (itemPosition) {
 		case 0:
-			fragment = new FrontPageFragment();
+			fragment = new FPFoundFragment();
 			break;
 		case 1:
-			fragment = new ProfileFragment();
+			fragment = new FPLostFragment();
 			break;
 			
 		default:
@@ -180,7 +190,6 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		
 		if (fragment != null) {
 			loadMainFragment(fragment);
-			
 			
 		} else {
 			// error in creating fragment
@@ -203,7 +212,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		
 		// set side-bar menu
 		mDrawerList.setOnItemClickListener(new SideBarClickListener());
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mMenuNames));
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item_drawer, mMenuNames));
 		
 		// enabling action bar app icon and behaving it as toggle button
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -233,7 +242,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 	}
 	
 	private void createFPSpinner() {
-		//getActionBar().setDisplayShowTitleEnabled(!isFrontPage);
+		getActionBar().setDisplayShowTitleEnabled(!isFrontPage);
 		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
 		mSpinnerNames = getResources().getStringArray(R.array.spinner_names);
@@ -243,7 +252,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 	}
 	
 	private void toggleSpinner() {
-		//getActionBar().setDisplayShowTitleEnabled(!isFrontPage);
+		getActionBar().setDisplayShowTitleEnabled(!isFrontPage);
 		
 		if(isFrontPage) {
 			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -257,5 +266,11 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction()
 				.replace(R.id.frame_container, fragment).commit();
+	}
+	
+	private void changeSpinnerMenu(int position) {
+		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		getActionBar().setListNavigationCallbacks(mSpinnerAdapter, this);
+		getActionBar().setSelectedNavigationItem(position);
 	}
 }
