@@ -20,8 +20,8 @@
     <string name="title_fragment_front_page">Found News</string>
     <string name="title_fragment_lost_thing">My Lost Thing</string>
     <string name="title_fragment_found_thing">My Found Things</string>
-    <string name="title_fragment_report_found">Report Found</string>
-    <string name="title_fragment_report_lost">Report Lost</string>
+    <string name="title_activity_report_found">Report Found</string>
+    <string name="title_activity_report_lost">Report Lost</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Search Lost/Found</string>
     <string name="title_activity_search_result">Search Result</string>
@@ -39,10 +39,20 @@
     <string name="foundemail_hint">E-mail</string>
     <string name="founddesc_hint">Description</string>
     <string name="founddate_label">Found Date</string>
+
     <string-array name="foundcat_strings">
-        <item >&lt;Category&gt;</item>
-        <item >Smartphone</item>
-        <item >Wallet</item>
+        <item>&lt;Category&gt;</item>
+        <item>Smartphone</item>
+        <item>Wallet</item>
     </string-array>
+
+    <string name="foundphone_hint">Phone Number to Contact</string>
+    <string name="foundsubmit_button">Submit</string>
+    <string name="discard_label">Cancel</string>
+    <string name="save_label">Done</string>
+    <string name="foundaccgal_desc">Access Media Gallery</string>
+    <string name="foundcamera_desc">Take Picture</string>
+    <string name="title_activity_test">Test</string>
+    <string name="lostdate_label">Lost Date</string>
 
 </resources>

@@ -45,12 +45,12 @@ public class FPFoundListAdapter extends BaseAdapter {
 		if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
                     context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = mInflater.inflate(R.layout.list_item_fpfound, null);
+            convertView = mInflater.inflate(R.layout.list_item_fpnews, null);
         }
          
-        ImageView imgIcon = (ImageView) convertView.findViewById(R.id.img_list_fpfound);
-        TextView txtTitle = (TextView) convertView.findViewById(R.id.txt_fpfound_title);
-        TextView txtDesc = (TextView) convertView.findViewById(R.id.txt_fpfound_desc);
+        ImageView imgIcon = (ImageView) convertView.findViewById(R.id.img_list_fpnews);
+        TextView txtTitle = (TextView) convertView.findViewById(R.id.txt_fpnews_title);
+        TextView txtDesc = (TextView) convertView.findViewById(R.id.txt_fpnews_desc);
          
         //imgIcon.setImageResource(items.get(position).getIcon());        
         txtTitle.setText(items.get(position).getTitle());

@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -45,12 +47,15 @@
         </activity>
         <activity
             android:name="org.alphacloud.wefoundit.ReportFoundActivity"
-            android:label="@string/title_fragment_report_found"
+            android:label="@string/title_activity_report_found"
+            android:launchMode="singleTop"
             android:parentActivityName="org.alphacloud.wefoundit.MainActivity" >
         </activity>
         <activity
-            android:name="org.alphacloud.wefoundit.ReportLostFragment"
-            android:label="@string/title_fragment_report_lost" >
+            android:name="org.alphacloud.wefoundit.ReportLostActivity"
+            android:label="@string/title_activity_report_lost"
+            android:launchMode="singleTop"
+            android:parentActivityName="org.alphacloud.wefoundit.MainActivity" >
         </activity>
         <activity
             android:name="org.alphacloud.wefoundit.SearchResultActivity"
@@ -68,6 +73,10 @@
         <activity
             android:name="org.alphacloud.wefoundit.FPLostFragment"
             android:label="@string/title_activity_fplost_fragment" >
+        </activity>
+        <activity
+            android:name="org.alphacloud.wefoundit.Test"
+            android:label="@string/title_activity_test" >
         </activity>
     </application>
 

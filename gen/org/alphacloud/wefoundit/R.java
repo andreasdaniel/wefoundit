@@ -168,51 +168,74 @@ public final class R {
         public static final int activity_vertical_margin=0x7f060001;
     }
     public static final class drawable {
-        public static final int ic_action_location_found=0x7f020000;
-        public static final int ic_action_refresh=0x7f020001;
-        public static final int ic_action_search=0x7f020002;
-        public static final int ic_drawer=0x7f020003;
-        public static final int ic_launcher=0x7f020004;
+        public static final int ic_action_accept=0x7f020000;
+        public static final int ic_action_camera=0x7f020001;
+        public static final int ic_action_cancel=0x7f020002;
+        public static final int ic_action_location_found=0x7f020003;
+        public static final int ic_action_refresh=0x7f020004;
+        public static final int ic_action_search=0x7f020005;
+        public static final int ic_action_storage=0x7f020006;
+        public static final int ic_drawer=0x7f020007;
+        public static final int ic_launcher=0x7f020008;
+        public static final int ic_menu_cancel_holo_light=0x7f020009;
+        public static final int ic_menu_done_holo_light=0x7f02000a;
     }
     public static final class id {
-        public static final int action_main_search=0x7f0b0015;
-        public static final int action_refresh=0x7f0b0016;
-        public static final int action_search=0x7f0b0017;
-        public static final int action_settings=0x7f0b0014;
-        public static final int btn_foundgps=0x7f0b0003;
-        public static final int drawer_layout=0x7f0b0000;
-        public static final int edtxt_founddesc=0x7f0b000b;
-        public static final int edtxt_foundemail=0x7f0b000a;
-        public static final int edtxt_foundloc=0x7f0b0004;
-        public static final int edtxt_foundname=0x7f0b0005;
-        public static final int frame_container=0x7f0b0001;
-        public static final int img_list_fpfound=0x7f0b0011;
-        public static final int left_drawer=0x7f0b0002;
-        public static final int listView_foundnews=0x7f0b000d;
-        public static final int menu_title=0x7f0b000f;
-        public static final int search_query=0x7f0b000c;
-        public static final int spinner_foundcat=0x7f0b0006;
-        public static final int txtSpinner=0x7f0b0010;
-        public static final int txt_founddate=0x7f0b0008;
-        public static final int txt_founddate_label=0x7f0b0007;
-        public static final int txt_foundtime=0x7f0b0009;
-        public static final int txt_fpfound_desc=0x7f0b0013;
-        public static final int txt_fpfound_title=0x7f0b0012;
-        public static final int txt_fplost=0x7f0b000e;
+        public static final int action_custombar_cancel=0x7f0b0000;
+        public static final int action_custombar_done=0x7f0b0001;
+        public static final int action_main_search=0x7f0b0024;
+        public static final int action_refresh=0x7f0b0025;
+        public static final int action_search=0x7f0b0026;
+        public static final int action_settings=0x7f0b0023;
+        public static final int btn_foundgps=0x7f0b0005;
+        public static final int drawer_layout=0x7f0b0002;
+        public static final int edtxt_founddesc=0x7f0b000d;
+        public static final int edtxt_foundemail=0x7f0b000b;
+        public static final int edtxt_foundloc=0x7f0b0006;
+        public static final int edtxt_foundphone=0x7f0b000c;
+        public static final int edtxt_lostdesc=0x7f0b001a;
+        public static final int frame_container=0x7f0b0003;
+        public static final int gallery_foundpics=0x7f0b000f;
+        public static final int imagBtn_foundaccgal=0x7f0b0011;
+        public static final int imgBtn_foundcamera=0x7f0b0010;
+        public static final int img_list_fpnews=0x7f0b0020;
+        public static final int left_drawer=0x7f0b0004;
+        public static final int linearLayout1=0x7f0b000e;
+        public static final int listView_foundnews=0x7f0b001c;
+        public static final int menu_title=0x7f0b001e;
+        public static final int search_query=0x7f0b001b;
+        public static final int spinner_foundcat=0x7f0b0007;
+        public static final int spinner_lostcat=0x7f0b0013;
+        public static final int spinner_lostcity=0x7f0b0019;
+        public static final int spinner_lostcountry=0x7f0b0017;
+        public static final int txtSpinner=0x7f0b001f;
+        public static final int txt_founddate=0x7f0b0009;
+        public static final int txt_founddate_label=0x7f0b0008;
+        public static final int txt_foundtime=0x7f0b000a;
+        public static final int txt_fplost=0x7f0b001d;
+        public static final int txt_fpnews_desc=0x7f0b0022;
+        public static final int txt_fpnews_title=0x7f0b0021;
+        public static final int txt_lostdate=0x7f0b0015;
+        public static final int txt_lostdate_label=0x7f0b0014;
+        public static final int txt_lostloc_label=0x7f0b0018;
+        public static final int txt_losttime=0x7f0b0016;
+        public static final int txt_lostusid=0x7f0b0012;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int activity_report_found=0x7f030001;
-        public static final int activity_search_result=0x7f030002;
-        public static final int fragment_found_thing=0x7f030003;
-        public static final int fragment_fp_found=0x7f030004;
-        public static final int fragment_fp_lost=0x7f030005;
-        public static final int fragment_lost_thing=0x7f030006;
-        public static final int fragment_profile=0x7f030007;
-        public static final int fragment_report_lost=0x7f030008;
-        public static final int list_item_drawer=0x7f030009;
-        public static final int list_item_fp_spinner=0x7f03000a;
-        public static final int list_item_fpfound=0x7f03000b;
+        public static final int action_bar_edit_discarddone=0x7f030000;
+        public static final int activity_main=0x7f030001;
+        public static final int activity_report_found=0x7f030002;
+        public static final int activity_report_lost=0x7f030003;
+        public static final int activity_search_result=0x7f030004;
+        public static final int activity_test=0x7f030005;
+        public static final int fragment_found_thing=0x7f030006;
+        public static final int fragment_fp_found=0x7f030007;
+        public static final int fragment_fp_lost=0x7f030008;
+        public static final int fragment_lost_thing=0x7f030009;
+        public static final int fragment_profile=0x7f03000a;
+        public static final int list_item_drawer=0x7f03000b;
+        public static final int list_item_fp_spinner=0x7f03000c;
+        public static final int list_item_fpnews=0x7f03000d;
     }
     public static final class menu {
         public static final int found_thing=0x7f0a0000;
@@ -224,30 +247,39 @@ public final class R {
         public static final int report_found=0x7f0a0006;
         public static final int report_lost=0x7f0a0007;
         public static final int search_result=0x7f0a0008;
+        public static final int test=0x7f0a0009;
     }
     public static final class string {
         public static final int action_refresh=0x7f07000e;
         public static final int action_search=0x7f07000b;
         public static final int action_settings=0x7f070001;
         public static final int app_name=0x7f070000;
+        public static final int discard_label=0x7f070018;
         public static final int drawer_close=0x7f070003;
         public static final int drawer_open=0x7f070002;
+        public static final int foundaccgal_desc=0x7f07001a;
+        public static final int foundcamera_desc=0x7f07001b;
         public static final int founddate_label=0x7f070015;
         public static final int founddesc_hint=0x7f070014;
         public static final int foundemail_hint=0x7f070013;
         public static final int foundgps_desc=0x7f070012;
         public static final int foundloc_hint=0x7f070011;
         public static final int foundname_hint=0x7f070010;
+        public static final int foundphone_hint=0x7f070016;
+        public static final int foundsubmit_button=0x7f070017;
         public static final int hello_world=0x7f070005;
+        public static final int lostdate_label=0x7f07001d;
+        public static final int save_label=0x7f070019;
         public static final int search_hint=0x7f07000c;
         public static final int title_activity_fplost_fragment=0x7f07000f;
+        public static final int title_activity_report_found=0x7f070009;
+        public static final int title_activity_report_lost=0x7f07000a;
         public static final int title_activity_search_result=0x7f07000d;
+        public static final int title_activity_test=0x7f07001c;
         public static final int title_fragment_found_thing=0x7f070008;
         public static final int title_fragment_front_page=0x7f070006;
         public static final int title_fragment_lost_thing=0x7f070007;
         public static final int title_fragment_profile=0x7f070004;
-        public static final int title_fragment_report_found=0x7f070009;
-        public static final int title_fragment_report_lost=0x7f07000a;
     }
     public static final class style {
         /** 
@@ -276,6 +308,9 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f090001;
+        public static final int EditEventCustomActionButton=0x7f090002;
+        public static final int EditEventCustomActionButtonImage=0x7f090003;
+        public static final int EditEventCustomActionButtonText=0x7f090004;
     }
     public static final class xml {
         public static final int searchable=0x7f040000;

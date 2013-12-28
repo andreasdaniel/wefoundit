@@ -110,6 +110,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 	private void displayNextView(int position) {
 		// update the main content by replacing fragments
 		Fragment fragment = null;
+		Intent intent;
 		isFrontPage = false;
 		switch (position) {
 		case 0:
@@ -126,11 +127,12 @@ public class MainActivity extends Activity implements OnNavigationListener {
 			fragment = new FoundThingFragment();
 			break;
 		case 4:
-			Intent intent = new Intent(getApplicationContext(), ReportFoundActivity.class);
+			intent = new Intent(getApplicationContext(), ReportFoundActivity.class);
 			startActivity(intent);
 			break;
 		case 5:
-			fragment = new ReportLostFragment();
+			intent = new Intent(getApplicationContext(), ReportLostActivity.class);
+			startActivity(intent);
 			break;
 
 		default:
@@ -159,6 +161,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		else {
 			// error in creating fragment
 			//Log.e("MainActivity", "Error in creating fragment");
+			mDrawerLayout.closeDrawer(mDrawerList);
 		}
 	}
 	

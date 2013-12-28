@@ -1,14 +1,81 @@
 package org.alphacloud.wefoundit;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.TimeZone;
+
+import org.alphacloud.wefoundit.adapter.ReportPhotoListAdapter;
+import org.alphacloud.wefoundit.logic.GPSTracker;
+import org.alphacloud.wefoundit.logic.ImageHandler;
+import org.alphacloud.wefoundit.logic.LocationAddress;
+import org.alphacloud.wefoundit.logic.UtilTool;
+
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.FragmentTransaction;
+import android.app.TimePickerDialog.OnTimeSetListener;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Gallery;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
-public class ReportFoundActivity extends Activity {
+@SuppressLint("SimpleDateFormat")
+public class ReportFoundActivity extends Activity implements OnDateSetListener, OnTimeSetListener {
 	// fields
+	private final int GALLERY_RCODE = 36;
+	private final int CAMERA_RCODE = 37;
+	
+	private final int MAX_PIC_NUMBER = 3;
+	
 	private Spinner mCatSpinner;
+	private TextView mDateTextView;
+	private TextView mTimeTextView;
+	private EditText mLocationEditText;
+	private EditText mDescEditText;
+	private EditText mEmailEditText;
+	private EditText mPhoneEditText;
+	@SuppressWarnings("deprecation")
+	private Gallery mGallery;
+	private ImageButton mAccessGalleryButton;
+	private ImageButton mCameraButton;
+	
+	private List<Bitmap> uploadedImages;
+	private String[] imagesLocation;
+	private ReportPhotoListAdapter galleryAdapter;
+	
+	@SuppressLint("SimpleDateFormat")
+	private final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("EEE, MMM dd, yyyy");
+	private final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("hh:mma");
+	private ImageButton mGpsButton;
+	private GPSTracker gps;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -17,14 +84,226 @@ public class ReportFoundActivity extends Activity {
 		
 		// init fields
 		mCatSpinner = (Spinner) findViewById(R.id.spinner_foundcat);
+		mDateTextView = (TextView) findViewById(R.id.txt_founddate);
+		mTimeTextView = (TextView) findViewById(R.id.txt_foundtime);
+		mGpsButton = (ImageButton) findViewById(R.id.btn_foundgps);
+		mLocationEditText = (EditText) findViewById(R.id.edtxt_foundloc);
+		mDescEditText = (EditText) findViewById(R.id.edtxt_founddesc);
+		mEmailEditText = (EditText) findViewById(R.id.edtxt_foundemail);
+		mPhoneEditText = (EditText) findViewById(R.id.edtxt_foundphone);
+		mGallery = (Gallery) findViewById(R.id.gallery_foundpics);
+		mAccessGalleryButton= (ImageButton) findViewById(R.id.imagBtn_foundaccgal);
+		mCameraButton = (ImageButton) findViewById(R.id.imgBtn_foundcamera);
+		
+		initCustomActionBar();
+		initPictureGallery();
+		
+		mLocationEditText.setEnabled(false);
+		
+		// date event listener
+		mDateTextView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				showDateDialog();
+			}
+		});
+		// set current date
+		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+		mDateTextView.setText(DATE_FORMATTER.format(cal.getTime()));
+		mTimeTextView.setText(TIME_FORMATTER.format(cal.getTime()));
+		
+		// time event listener
+		mTimeTextView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				showTimeDialog();
+			}
+		});
+		
+		// gps button
+		mGpsButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				getGPSLocation();
+			}
+		});
+		
+		// accessing gallery button
+		mAccessGalleryButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				accessPhotoGallery();
+			}
+		});
+		
+		// launch camera button
+		mCameraButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				startNativeCamera();
+			}
+		});
 		
 		// dummy
 		String[] cats = getResources().getStringArray(R.array.foundcat_strings);
 		ArrayAdapter<String> adpt = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, cats);
 		adpt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mCatSpinner.setAdapter(adpt);
-		
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		//getMenuInflater().inflate(R.menu.report_found, menu);
+		return true;
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if(this.gps != null) {
+			this.gps.stopUsingGPS();
+		}
+	}
+	
+	@Override
+	public void onDateSet(DatePicker view, int year, int monthOfYear,
+			int dayOfMonth) {
+		Calendar cal = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+		mDateTextView.setText(DATE_FORMATTER.format(cal.getTime()));
+	}
+	
+	@Override
+	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		cal.set(Calendar.MINUTE, minute);
+		mTimeTextView.setText(TIME_FORMATTER.format(cal.getTime()));
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case GALLERY_RCODE:
+			Log.d("IMG_PATH", data.getData().getPath());
+			if(uploadedImages.size() < MAX_PIC_NUMBER){
+				String location = UtilTool.getRealPathFromURI(this, data.getData());
+				Bitmap image = ImageHandler.decodeFile(location, 500, 500);
+				uploadedImages.add(image);
+				imagesLocation[uploadedImages.indexOf(image)] = location;
+				galleryAdapter.notifyDataSetChanged();
+			}
+			else {
+				Toast.makeText(this, "You only can upload 3 pics", Toast.LENGTH_LONG).show();
+			}
+			break;
+		case CAMERA_RCODE:
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	private void initCustomActionBar() {
+		View customActionBar = getLayoutInflater().inflate(R.layout.action_bar_edit_discarddone, new LinearLayout(this), false);
+		View cancelActionView = customActionBar.findViewById(R.id.action_custombar_cancel);
+		View doneActionView = customActionBar.findViewById(R.id.action_custombar_done);
+		cancelActionView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				finish();
+				
+			}
+		});
+		doneActionView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		ActionBar ab = getActionBar();
+		ab.setDisplayShowHomeEnabled(false);
+		ab.setDisplayShowTitleEnabled(false);
+		ab.setDisplayShowCustomEnabled(true);
+		ab.setCustomView(customActionBar);
+	}
+	
+	private void initPictureGallery() {
+		uploadedImages = new ArrayList<Bitmap>(MAX_PIC_NUMBER);
+		galleryAdapter = new ReportPhotoListAdapter(this, uploadedImages);
+		imagesLocation = new String[MAX_PIC_NUMBER];
+		
+		mGallery.setSpacing(10);
+		mGallery.setAdapter(galleryAdapter);
+		mGallery.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int id,
+					long arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
+	private void showDateDialog() {
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		DialogFragment newFragment = new DatePickerDialogFragment(ReportFoundActivity.this);
+		newFragment.show(ft, "date_dialog");
+	}
+
+	private void showTimeDialog() {
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		DialogFragment newFragment = new TimePickerDialogFragment(ReportFoundActivity.this);
+		newFragment.show(ft, "date_dialog");
+	}
+	
+	private void getGPSLocation() {
+		// create class object
+        gps = new GPSTracker(this);
+
+        // check if GPS enabled     
+        if(gps.canGetLocation()){
+             
+            double latitude = gps.getLatitude();
+            double longitude = gps.getLongitude();
+             
+            // \n is for new line
+            Toast.makeText(getApplicationContext(),
+            		"Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+            
+            String dummy = (new LocationAddress(this, latitude, longitude)).getAddress();
+            if(dummy != null) {
+            	System.out.println(dummy);
+            	 mLocationEditText.setText(dummy);
+            };
+        } else{
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gps.showSettingsAlert();
+        }
+	}
+	
+	private void accessPhotoGallery() {
+		Intent intent = new Intent();  
+		intent.setType("image/*");  
+		intent.setAction(Intent.ACTION_GET_CONTENT);  
+		startActivityForResult(Intent.createChooser(intent, "Choose Picture"), GALLERY_RCODE);
+	}
+	
+	private void startNativeCamera() {
+		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+		startActivityForResult(intent, CAMERA_RCODE);
+	}
+	
 }
