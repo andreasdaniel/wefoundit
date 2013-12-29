@@ -31,6 +31,7 @@
             android:src="@drawable/ic_action_accept" />
 
         <TextView
+            android:id="@+id/txt_saveaction"
             style="@style/EditEventCustomActionButtonText"
             android:text="@string/save_label" />
     </LinearLayout>

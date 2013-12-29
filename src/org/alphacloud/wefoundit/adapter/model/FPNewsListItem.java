@@ -1,12 +1,12 @@
 package org.alphacloud.wefoundit.adapter.model;
 
-public class FPFoundListItem {
+public class FPNewsListItem {
 	// fields
 	private String title;
 	private String desc;
 	private int icon; // resouce id of the icon
 	
-	public FPFoundListItem(String title, String desc, int icon) {
+	public FPNewsListItem(String title, String desc, int icon) {
 		super();
 		this.title = title;
 		this.desc = desc;

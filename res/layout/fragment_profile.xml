@@ -4,8 +4,126 @@
     android:layout_height="match_parent" >
 
     <TextView
+        android:id="@+id/txtView_profuser"
+        android:layout_width="40pt"
+        android:layout_height="wrap_content"
+        android:padding="5dip"
+        android:text="Username:"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtView_profuser1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="profile" />
+        android:layout_toRightOf="@id/txtView_profuser"
+        android:padding="5dip"
+        android:text="[A]kke"
+        android:textSize="7pt"/>
+
+    <TextView
+        android:id="@+id/txtView_profname"
+        android:layout_width="40pt"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profuser"
+        android:padding="5dip"
+        android:text="Name:"
+        android:textSize="7pt" />
+
+    <EditText
+        android:id="@+id/edtxt_profname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profuser"
+        android:layout_toRightOf="@id/txtView_profname"
+        android:padding="5dip"
+        android:text="Akke Alliance"
+        android:textSize="7pt"
+        android:background="@android:color/transparent" />
+
+    <TextView
+        android:id="@+id/txtView_profemail"
+        android:layout_width="40pt"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profname"
+        android:padding="5dip"
+        android:text="Email:"
+        android:textSize="7pt" />
+
+    <EditText
+        android:id="@+id/edtxt_profemail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profname"
+        android:layout_toRightOf="@id/txtView_profemail"
+        android:padding="5dip"
+        android:text="akkealliance@gmail.com"
+        android:textSize="7pt"
+        android:background="@android:color/transparent" />
+
+    <TextView
+        android:id="@+id/txtView_profphone"
+        android:layout_width="40pt"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profemail"
+        android:padding="5dip"
+        android:text="Phone:"
+        android:textSize="7pt" />
+
+    <EditText
+        android:id="@+id/edtxt_profphone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profemail"
+        android:layout_toRightOf="@id/txtView_profphone"
+        android:padding="5dip"
+        android:text="0978613xxx"
+        android:textSize="7pt"
+        android:background="@android:color/transparent" />
+
+    <TextView
+        android:id="@+id/txtView_profdonation"
+        android:layout_width="40pt"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profphone"
+        android:padding="5dip"
+        android:text="Donation:"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtView_profdonation1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profphone"
+        android:layout_toRightOf="@id/txtView_profdonation"
+        android:padding="5dip"
+        android:text="$10"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtView_profbump"
+        android:layout_width="40pt"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profdonation"
+        android:padding="5dip"
+        android:text="Bump Left:"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtView_profbump1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtView_profdonation"
+        android:layout_toRightOf="@id/txtView_profbump"
+        android:padding="5dip"
+        android:text="3"
+        android:textSize="7pt" />
+
+    <Button
+        android:id="@+id/btn_profupdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/txtView_profbump"
+        android:text="Update" />
 
 </RelativeLayout>

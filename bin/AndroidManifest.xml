@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -77,6 +78,15 @@
         <activity
             android:name="org.alphacloud.wefoundit.Test"
             android:label="@string/title_activity_test" >
+        </activity>
+        <activity
+            android:name="org.alphacloud.wefoundit.ThingActivity"
+            android:label="@string/title_activity_thing"
+            android:parentActivityName="org.alphacloud.wefoundit.MainActivity" >
+        </activity>
+        <activity
+            android:name="org.alphacloud.wefoundit.ImageDetailActivity"
+            android:label="@string/title_activity_image_detail" >
         </activity>
     </application>
 

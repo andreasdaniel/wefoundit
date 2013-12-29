@@ -42,10 +42,10 @@ public class FPSpinnerAdapter extends BaseAdapter {
 		return getCustomView(position, convertView, parent);
 	}
 
-	@Override
-	public View getDropDownView(int position, View convertView, ViewGroup parent) {
-		return getCustomView(position, convertView, parent);
-	}
+//	@Override
+//	public View getDropDownView(int position, View convertView, ViewGroup parent) {
+//		return getCustomView(position, convertView, parent);
+//	}
 	
 	private View getCustomView(int position, View convertView, ViewGroup parent) {
 			
@@ -53,12 +53,12 @@ public class FPSpinnerAdapter extends BaseAdapter {
             LayoutInflater mInflater = (LayoutInflater)
                     context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             convertView = mInflater.inflate(R.layout.list_item_fp_spinner, null);
-            
-            txtSpinner = (TextView) convertView.findViewById(R.id.txtSpinner);
-            
-            txtSpinner.setText(spinnerNavItem[position]);
         }
         
+		txtSpinner = (TextView) convertView.findViewById(R.id.txtSpinner);
+        
+        txtSpinner.setText(spinnerNavItem[position]);
+		
         return convertView;
 	}
 }

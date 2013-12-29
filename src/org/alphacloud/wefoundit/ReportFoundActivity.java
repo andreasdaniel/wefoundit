@@ -13,11 +13,14 @@ import org.alphacloud.wefoundit.adapter.ReportPhotoListAdapter;
 import org.alphacloud.wefoundit.logic.GPSTracker;
 import org.alphacloud.wefoundit.logic.ImageHandler;
 import org.alphacloud.wefoundit.logic.LocationAddress;
+import org.alphacloud.wefoundit.logic.ShareData;
 import org.alphacloud.wefoundit.logic.UtilTool;
+import org.alphacloud.wefoundit.model.Category;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.FragmentTransaction;
 import android.app.TimePickerDialog.OnTimeSetListener;
@@ -26,6 +29,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.app.NavUtils;
@@ -35,6 +39,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -51,8 +56,7 @@ import android.widget.Toast;
 public class ReportFoundActivity extends Activity implements OnDateSetListener, OnTimeSetListener {
 	// fields
 	private final int GALLERY_RCODE = 36;
-	private final int CAMERA_RCODE = 37;
-	
+	private final int CAMERA_RCODE = 37;	
 	private final int MAX_PIC_NUMBER = 3;
 	
 	private Spinner mCatSpinner;
@@ -68,7 +72,7 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener, 
 	private ImageButton mCameraButton;
 	
 	private List<Bitmap> uploadedImages;
-	private String[] imagesLocation;
+	private List<String> imagesLocation;
 	private ReportPhotoListAdapter galleryAdapter;
 	
 	@SuppressLint("SimpleDateFormat")
@@ -150,8 +154,8 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener, 
 		});
 		
 		// dummy
-		String[] cats = getResources().getStringArray(R.array.foundcat_strings);
-		ArrayAdapter<String> adpt = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, cats);
+		//String[] cats = getResources().getStringArray(R.array.foundcat_strings);
+		ArrayAdapter<Category> adpt = new ArrayAdapter<Category>(this, android.R.layout.simple_spinner_item, ShareData.CATEGORIES);
 		adpt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mCatSpinner.setAdapter(adpt);
 	}
@@ -188,25 +192,27 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener, 
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-		case GALLERY_RCODE:
-			Log.d("IMG_PATH", data.getData().getPath());
-			if(uploadedImages.size() < MAX_PIC_NUMBER){
-				String location = UtilTool.getRealPathFromURI(this, data.getData());
-				Bitmap image = ImageHandler.decodeFile(location, 500, 500);
-				uploadedImages.add(image);
-				imagesLocation[uploadedImages.indexOf(image)] = location;
-				galleryAdapter.notifyDataSetChanged();
+		if(resultCode == RESULT_OK) {
+			switch (requestCode) {
+			case GALLERY_RCODE:
+				Log.d("IMG_PATH", data.getData().getPath());
+				if(uploadedImages.size() < MAX_PIC_NUMBER){
+					String location = UtilTool.getRealPathFromURI(this, data.getData());
+					Bitmap image = ImageHandler.decodeFile(location, 500, 500);
+					uploadedImages.add(image);
+					imagesLocation.add(location);
+					galleryAdapter.notifyDataSetChanged();
+				}
+				else {
+					Toast.makeText(this, "You only can upload 3 pics", Toast.LENGTH_LONG).show();
+				}
+				break;
+			case CAMERA_RCODE:
+				break;
+	
+			default:
+				break;
 			}
-			else {
-				Toast.makeText(this, "You only can upload 3 pics", Toast.LENGTH_LONG).show();
-			}
-			break;
-		case CAMERA_RCODE:
-			break;
-
-		default:
-			break;
 		}
 	}
 	
@@ -240,19 +246,72 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener, 
 	private void initPictureGallery() {
 		uploadedImages = new ArrayList<Bitmap>(MAX_PIC_NUMBER);
 		galleryAdapter = new ReportPhotoListAdapter(this, uploadedImages);
-		imagesLocation = new String[MAX_PIC_NUMBER];
+		imagesLocation = new ArrayList<String>(MAX_PIC_NUMBER);
 		
 		mGallery.setSpacing(10);
 		mGallery.setAdapter(galleryAdapter);
 		mGallery.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int id,
-					long arg3) {
-				// TODO Auto-generated method stub
+			public void onItemClick(AdapterView<?> parent, View v, int position,
+					long id) {
 				
+				startImageDetail(position);
 			}
 		});
+		
+		mGallery.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+				deleteAction(position);
+				return false;
+			}
+			
+		});
+	}
+	
+	private void deleteAction(int position) {
+		DialogInterface.OnClickListener dialogClickListener = new DialogClickListener(position);
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Do you want to delete this picture?").setPositiveButton("Yes", dialogClickListener)
+		    .setNegativeButton("No", dialogClickListener).show();
+	}
+	
+	private class DialogClickListener implements DialogInterface.OnClickListener {
+		int pos;
+		
+		public DialogClickListener(int position) {
+			this.pos = position;
+		}
+		
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			switch (which){
+	        case DialogInterface.BUTTON_POSITIVE:
+	            imagesLocation.remove(pos);
+	            uploadedImages.remove(pos);
+	            galleryAdapter.notifyDataSetChanged();
+	            break;
+
+	        case DialogInterface.BUTTON_NEGATIVE:
+	            dialog.dismiss();
+	            break;
+	        }
+			
+		}
+		
+	}
+	
+	private void startImageDetail(int position) {
+		Intent intent = new Intent();
+		intent.setClass(this, ImageDetailActivity.class);
+		intent.putExtra("PARENT_KEY", 11);
+		intent.putExtra("IMAGE_LOC", imagesLocation.get(position));
+		
+		startActivity(intent);
 	}
 	
 	private void showDateDialog() {
@@ -264,7 +323,7 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener, 
 	private void showTimeDialog() {
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		DialogFragment newFragment = new TimePickerDialogFragment(ReportFoundActivity.this);
-		newFragment.show(ft, "date_dialog");
+		newFragment.show(ft, "time_dialog");
 	}
 	
 	private void getGPSLocation() {

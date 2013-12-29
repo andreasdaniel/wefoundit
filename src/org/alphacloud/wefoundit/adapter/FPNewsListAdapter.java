@@ -2,7 +2,7 @@ package org.alphacloud.wefoundit.adapter;
 
 import java.util.ArrayList;
 
-import org.alphacloud.wefoundit.adapter.model.FPFoundListItem;
+import org.alphacloud.wefoundit.adapter.model.FPNewsListItem;
 
 import org.alphacloud.wefoundit.R;
 import android.app.Activity;
@@ -14,12 +14,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FPFoundListAdapter extends BaseAdapter {
+public class FPNewsListAdapter extends BaseAdapter {
 	// fields
 	private Context context;
-	private ArrayList<FPFoundListItem> items;
+	private ArrayList<FPNewsListItem> items;
 			
-	public FPFoundListAdapter(Context context, ArrayList<FPFoundListItem> items) {
+	public FPNewsListAdapter(Context context, ArrayList<FPNewsListItem> items) {
 		super();
 		this.context = context;
 		this.items = items;

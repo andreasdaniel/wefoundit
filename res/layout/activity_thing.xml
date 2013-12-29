@@ -1,0 +1,113 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/txtview_thingcategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dip"
+        android:text="Category:"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtview_thingcategory1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/txtview_thingcategory"
+        android:padding="10dip"
+        android:text="Bags, Baggages"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtview_thingdescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtview_thingcategory"
+        android:padding="10dip"
+        android:text="Description:"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtview_thingdescription1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtview_thingdescription"
+        android:padding="10dip"
+        android:text="A black bag with tag with keychain turtle is found in front of seven eleven dining hall 2 National Chiao Tung University, Hsinchu, Taiwan."
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtview_thingdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtview_thingdescription1"
+        android:padding="10dip"
+        android:text="Date:"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtview_thingdate1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtview_thingdescription1"
+        android:layout_toRightOf="@id/txtview_thingdate"
+        android:padding="10dip"
+        android:text="2013-12-27 09:28:35"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtview_thingplace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtview_thingdate"
+        android:padding="10dip"
+        android:text="Place:"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtview_thingplace1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtview_thingdate"
+        android:layout_toRightOf="@id/txtview_thingplace"
+        android:padding="10dip"
+        android:text="Hsinchu, Dong District, Taiwan"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtview_thingclaim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtview_thingplace"
+        android:padding="10dip"
+        android:text="Have not been claimed"
+        android:textSize="7pt" />
+
+    <TextView
+        android:id="@+id/txtview_thingclaim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtview_thingplace"
+        android:padding="10dip"
+        android:text="Have not been claimed"
+        android:textSize="7pt" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/txtview_thingplace1"
+        android:layout_below="@+id/txtview_thingclaim"
+        android:background="@color/LightBlue" >
+
+        <Gallery
+            android:id="@+id/gallery_thingpics"
+            android:layout_width="0dip"
+            android:layout_height="100dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</RelativeLayout>

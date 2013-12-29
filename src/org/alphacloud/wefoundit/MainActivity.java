@@ -1,6 +1,7 @@
 package org.alphacloud.wefoundit;
 
 import org.alphacloud.wefoundit.adapter.FPSpinnerAdapter;
+import org.alphacloud.wefoundit.util.NativeDatabaseParser;
 
 import android.os.Bundle;
 import android.app.ActionBar;
@@ -41,6 +42,9 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		
 		createFPSpinner();
 		createSideBarMenu(savedInstanceState);
+		
+		NativeDatabaseParser parser = new NativeDatabaseParser(this);
+		parser.parseNativeDatabase();
 	}
 
 	@Override
@@ -60,6 +64,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 			menu.getItem(i).setVisible(true);
 		}
 		
+		// hide refresh action menu
 		if(!isFrontPage || isDrawerOpen){
 			menu.getItem(1).setVisible(false);
 		}
@@ -89,7 +94,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
+        // Pass any configuration change to the drawer toggles
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 	
@@ -114,7 +119,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		isFrontPage = false;
 		switch (position) {
 		case 0:
-			changeSpinnerMenu(0);
+			//changeSpinnerMenu(0);
 			isFrontPage = true;
 			break;
 		case 1:
@@ -200,7 +205,7 @@ public class MainActivity extends Activity implements OnNavigationListener {
 			return false;
 		}
 		
-		return true;
+		return false;
 	}
 	
 	private void createSideBarMenu(Bundle savedInstanceState) {
@@ -245,11 +250,13 @@ public class MainActivity extends Activity implements OnNavigationListener {
 	}
 	
 	private void createFPSpinner() {
-		getActionBar().setDisplayShowTitleEnabled(!isFrontPage);
+		getActionBar().setDisplayShowTitleEnabled(false);
 		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
 		mSpinnerNames = getResources().getStringArray(R.array.spinner_names);
 		mSpinnerAdapter = new FPSpinnerAdapter(getApplicationContext(), mSpinnerNames);
+		//ArrayAdapter<String> adpt = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mSpinnerNames);
+		//adpt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		getActionBar().setListNavigationCallbacks(mSpinnerAdapter, this);
 	}

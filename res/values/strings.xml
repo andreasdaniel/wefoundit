@@ -54,5 +54,8 @@
     <string name="foundcamera_desc">Take Picture</string>
     <string name="title_activity_test">Test</string>
     <string name="lostdate_label">Lost Date</string>
+    <string name="lostloc_hint">Lost Location</string>
+    <string name="title_activity_thing">ThingActivity</string>
+    <string name="title_activity_image_detail">ImageDetailActivity</string>
 
 </resources>

@@ -1,109 +1,129 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="500dp"
+    android:scrollbars="horizontal" >
 
-    <TextView
-        android:id="@+id/txt_lostusid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="report lost" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-    <Spinner
-        android:id="@+id/spinner_lostcat"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/txt_lostusid"
-        android:layout_marginTop="10dp" />
-
-    <TextView
-        android:id="@+id/txt_lostdate_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner_lostcat"
-        android:layout_marginLeft="5dp"
-        android:text="@string/lostdate_label"
-        android:textColor="@color/LightGrey" />
-
-    <TextView
-        android:id="@+id/txt_lostdate"
-        style="@android:style/Widget.DeviceDefault.Light.Spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/txt_lostdate_label"
-        android:layout_toLeftOf="@+id/txt_losttime"
-        android:text="Wed,Jan 01,2014" />
-
-    <TextView
-        android:id="@+id/txt_losttime"
-        style="@android:style/Widget.DeviceDefault.Light.Spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/txt_lostdate"
-        android:layout_alignBottom="@+id/txt_lostdate"
-        android:layout_alignParentRight="true"
-        android:text="10:10AM" />
-
-    <Spinner
-        android:id="@+id/spinner_lostcountry"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/txt_lostdate"
-        android:layout_marginTop="14dp" />
-
-    <TextView
-        android:id="@+id/txt_lostloc_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txt_lostdate_label"
-        android:layout_below="@+id/txt_lostdate"
-        android:text="Estimated Lost Location"
-        android:textColor="@color/LightGrey" />
-
-    <Spinner
-        android:id="@+id/spinner_lostcity"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/spinner_lostcountry" />
-
-    <EditText
-        android:id="@+id/edtxt_lostdesc"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/spinner_lostcity"
-        android:ems="15"
-        android:hint="@string/founddesc_hint"
-        android:inputType="textMultiLine"
-        android:lines="2" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txt_lostloc_label"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/edtxt_lostdesc"
-        android:layout_marginTop="14dp" >
-
-        <Gallery
-            android:id="@+id/gallery_foundpics"
-            android:layout_width="0dip"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:background="@color/LightBlue" />
-
-        <ImageButton
-            android:id="@+id/imagBtn_foundaccgal"
+        <TextView
+            android:id="@+id/txt_lostusid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/foundaccgal_desc"
-            android:src="@drawable/ic_action_storage" />
-    </LinearLayout>
+            android:text="report lost" />
 
-</RelativeLayout>
+        <Spinner
+            android:id="@+id/spinner_lostcat"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/txt_lostusid"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/txt_lostdate_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_lostcat"
+            android:layout_marginLeft="5dp"
+            android:text="@string/lostdate_label"
+            android:textColor="@color/LightGrey" />
+
+        <TextView
+            android:id="@+id/txt_lostdate"
+            style="@android:style/Widget.DeviceDefault.Light.Spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/txt_lostdate_label"
+            android:layout_toLeftOf="@+id/txt_losttime"
+            android:text="Wed,Jan 01,2014" />
+
+        <TextView
+            android:id="@+id/txt_losttime"
+            style="@android:style/Widget.DeviceDefault.Light.Spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txt_lostdate"
+            android:layout_alignBottom="@+id/txt_lostdate"
+            android:layout_alignParentRight="true"
+            android:text="10:10AM" />
+
+        <Spinner
+            android:id="@+id/spinner_lostcountry"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/txt_lostloc"
+            android:layout_marginTop="14dp" />
+
+        <TextView
+            android:id="@+id/txt_lostloc_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txt_lostdate_label"
+            android:layout_below="@+id/txt_lostdate"
+            android:text="Estimated Lost Location"
+            android:textColor="@color/LightGrey" />
+
+        <Spinner
+            android:id="@+id/spinner_lostcity"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/spinner_lostcountry" />
+
+        <EditText
+            android:id="@+id/edtxt_lostdesc"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/spinner_lostcity"
+            android:ems="15"
+            android:hint="@string/founddesc_hint"
+            android:inputType="textMultiLine"
+            android:lines="2" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txt_lostloc_label"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/edtxt_lostdesc"
+            android:layout_marginTop="14dp" >
+
+            <Gallery
+                android:id="@+id/gallery_lostpics"
+                android:layout_width="0dip"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="@color/LightBlue" />
+
+            <ImageButton
+                android:id="@+id/imagBtn_lostaccgal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/foundaccgal_desc"
+                android:src="@drawable/ic_action_storage" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/txt_lostloc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/txt_lostloc_label"
+            android:ems="10"
+            android:hint="@string/lostloc_hint" >
+
+            <requestFocus />
+        </EditText>
+
+    </RelativeLayout>
+
+</ScrollView>

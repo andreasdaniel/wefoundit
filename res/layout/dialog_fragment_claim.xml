@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/txt_claimemaillabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="7dip"
+        android:text="Email:" />
+
+    <TextView
+        android:id="@+id/txt_claimemail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/txt_claimemaillabel"
+        android:padding="7dip"
+        android:text="blabla@wefoundit.com" />
+
+    <TextView
+        android:id="@+id/txt_claimphonelabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_claimemaillabel"
+        android:padding="7dip"
+        android:text="Phone:" />
+
+    <TextView
+        android:id="@+id/txt_claimphone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txt_claimphonelabel"
+        android:layout_alignBottom="@+id/txt_claimphonelabel"
+        android:layout_alignLeft="@+id/txt_claimemail"
+        android:padding="7dip"
+        android:text="098881197" />
+
+    <Button
+        android:id="@+id/button_claimclose"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/txt_claimphonelabel"
+        android:layout_marginTop="14dp"
+        android:text="Close" />
+
+</RelativeLayout>
