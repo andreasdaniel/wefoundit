@@ -11,6 +11,7 @@ public final class R {
     public static final class array {
         public static final int foundcat_strings=0x7f080002;
         public static final int menu_names=0x7f080000;
+        public static final int menu_names_no=0x7f080003;
         public static final int spinner_names=0x7f080001;
     }
     public static final class attr {

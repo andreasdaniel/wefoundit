@@ -13,6 +13,7 @@
         <item>My Found Things</item>
         <item>Report Found</item>
         <item>Report Lost</item>
+        <item >Logout</item>
     </string-array>
 
     <string name="title_fragment_profile">Profile</string>
@@ -57,5 +58,11 @@
     <string name="lostloc_hint">Lost Location</string>
     <string name="title_activity_thing">ThingActivity</string>
     <string name="title_activity_image_detail">ImageDetailActivity</string>
+    <string-array name="menu_names_no">
+        <item >Front Page</item>
+        <item>Login</item><item >Register</item>
+        <item >Report Found</item>
+        
+    </string-array>
 
 </resources>
