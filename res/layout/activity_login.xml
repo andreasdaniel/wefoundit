@@ -1,0 +1,43 @@
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <EditText
+        android:id="@+id/edtxt_loginemail1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dip"
+        android:hint="Email or Username"
+        android:textSize="7pt" />
+    
+    <EditText
+        android:id="@+id/edtxt_loginpassword1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dip"
+        android:hint="Password"
+        android:password="true" 
+        android:layout_below="@id/edtxt_loginemail1"
+        android:textSize="7pt" />
+
+    <Button
+	    android:id="@+id/txtview_loginlogin"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dip"
+        android:text="Login" 
+        android:layout_below="@id/edtxt_loginpassword1"
+        android:textSize="7pt" />
+    
+    <Button
+	    android:id="@+id/txtview_loginsignup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dip"
+        android:text="Sign up" 
+        android:layout_below="@id/txtview_loginlogin"
+        android:textSize="7pt" />
+    
+</RelativeLayout>

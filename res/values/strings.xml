@@ -64,5 +64,7 @@
         <item >Report Found</item>
         
     </string-array>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_login">Login</string>
 
 </resources>

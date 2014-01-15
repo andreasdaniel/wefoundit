@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <EditText
+        android:id="@+id/edtxt_regfullname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full Name"
+        android:padding="20dip"
+        android:textSize="7pt" />
+
+    <EditText
+        android:id="@+id/edtxt_regusername"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtxt_regfullname"
+        android:hint="Username"
+        android:padding="20dip"
+        android:textSize="7pt" />
+
+    <EditText
+        android:id="@+id/edtxt_regemail"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtxt_regusername"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:padding="20dip"
+        android:textSize="7pt" />
+
+    <EditText
+        android:id="@+id/edtxt_regpassword"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtxt_regemail"
+        android:hint="Password"
+        android:padding="20dip"
+        android:password="true"
+        android:textSize="7pt" />
+
+    <EditText
+        android:id="@+id/edtxt_regconfirmpassword"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtxt_regpassword"
+        android:hint="Re-enter Password"
+        android:padding="20dip"
+        android:password="true"
+        android:textSize="7pt" />
+
+    <EditText
+        android:id="@+id/edtxt_regphone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtxt_regconfirmpassword"
+        android:hint="Phone Number"
+        android:padding="20dip"
+        android:phoneNumber="true"
+        android:textSize="7pt" />
+
+    <Button
+        android:id="@+id/but_regsignup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtxt_regphone"
+        android:onClick="signup"
+        android:padding="20dip"
+        android:text="Sign Up"
+        android:textSize="7pt" />
+
+</RelativeLayout>

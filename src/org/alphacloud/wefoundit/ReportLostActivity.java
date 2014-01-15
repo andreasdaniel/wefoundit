@@ -9,11 +9,17 @@ import java.util.TimeZone;
 
 import org.alphacloud.wefoundit.adapter.ReportPhotoListAdapter;
 import org.alphacloud.wefoundit.logic.ImageHandler;
+import org.alphacloud.wefoundit.logic.SessionManager;
 import org.alphacloud.wefoundit.logic.ShareData;
-import org.alphacloud.wefoundit.logic.UtilTool;
 import org.alphacloud.wefoundit.model.Category;
 import org.alphacloud.wefoundit.model.City;
 import org.alphacloud.wefoundit.model.Country;
+import org.alphacloud.wefoundit.util.JSONParser;
+import org.alphacloud.wefoundit.util.UtilTool;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -22,10 +28,12 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -69,12 +77,22 @@ public class ReportLostActivity extends Activity implements OnDateSetListener, O
 	private final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("EEE, MMM dd, yyyy");
 	private final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("hh:mma");
 	
+	private ProgressDialog pDialog;
+	private JSONParser jsonParser;
+	private String urlRepLost = "http://140.113.210.89/wefoundit/reportlost.php";
+	private SessionManager manager;
+	protected String curDate;
+	protected String curTime;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_report_lost);
 		
+		jsonParser = new JSONParser();
+		
 		// init fields
+		mUser = (TextView) findViewById(R.id.txt_lostusid);
 		mTimeTextView = (TextView) findViewById(R.id.txt_losttime);
 		mDateTextView = (TextView) findViewById(R.id.txt_lostdate);
 		mCountrySpinner = (Spinner) findViewById(R.id.spinner_lostcountry);
@@ -82,14 +100,24 @@ public class ReportLostActivity extends Activity implements OnDateSetListener, O
 		mCatSpinner = (Spinner) findViewById(R.id.spinner_lostcat);
 		mAccessGalleryButton = (ImageButton) findViewById(R.id.imagBtn_lostaccgal);
 		mGallery =(Gallery) findViewById(R.id.gallery_lostpics);
+		mLocEditText = (EditText) findViewById(R.id.txt_lostloc);
+		mDescription = (EditText) findViewById(R.id.edtxt_lostdesc);
 		
 		initCustomActionBar();
 		initPictureGallery();
 		
+		manager = new SessionManager(this);
+		if(manager.isLogin()) {
+			mUser.setText(manager.getUsername());
+		}
+		
 		// set current date
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-		mDateTextView.setText(DATE_FORMATTER.format(cal.getTime()));
-		mTimeTextView.setText(TIME_FORMATTER.format(cal.getTime()));
+		curDate = DATE_FORMATTER.format(cal.getTime());
+		curTime = TIME_FORMATTER.format(cal.getTime());
+		mDateTextView.setText(curDate);
+		mTimeTextView.setText(curTime);
+
 		
 		// date event listener
 		mDateTextView.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +221,21 @@ public class ReportLostActivity extends Activity implements OnDateSetListener, O
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				boolean satisfy = false;
+				
+				int cat = mCatSpinner.getSelectedItemPosition();
+				int city = mCitySpinner.getSelectedItemPosition();
+				String desc = mDescription.getText().toString().trim();
+				String add = mLocEditText.getText().toString().trim();
+				
+				if(cat > 0 && city > 0 && desc != "" && add != "")
+					satisfy = true;
+				
+				if(satisfy)
+					new ReportLost().execute();
+				else
+					Toast.makeText(getApplicationContext(),
+		            		"Please check your field!", Toast.LENGTH_LONG).show();
 				
 			}
 		});
@@ -244,7 +286,7 @@ public class ReportLostActivity extends Activity implements OnDateSetListener, O
 			ArrayAdapter<City> cityAdpt = new ArrayAdapter<City>(this, android.R.layout.simple_spinner_item, selectedCity);
 			cityAdpt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			mCitySpinner.setAdapter(cityAdpt);
-		}
+		} 
 	}
 	
 	private void accessPhotoGallery() {
@@ -322,5 +364,84 @@ public class ReportLostActivity extends Activity implements OnDateSetListener, O
 		intent.putExtra("IMAGE_LOC", imagesLocation.get(position));
 		
 		startActivity(intent);
+	}
+	
+	class ReportLost extends AsyncTask<String, String, String> {
+		int success = 0;
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(ReportLostActivity.this);
+			pDialog.setMessage("Upload report lost, please wait...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
+		}
+
+		protected String doInBackground(String... args) {
+
+			int cat = ShareData.CATEGORIES.get(
+					mCatSpinner.getSelectedItemPosition()).getId();
+			String date = mDateTextView.getText().toString();
+			String time = mTimeTextView.getText().toString();
+			int user = manager.getUserID();
+			int city = ((City)mCitySpinner.getAdapter().getItem(
+					mCitySpinner.getSelectedItemPosition())).getId();
+			String desc = mDescription.getText().toString();
+			String add = mLocEditText.getText().toString();
+			// photo
+
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("rlcat", cat + ""));
+			params.add(new BasicNameValuePair("rldate", date + " " + time));
+			params.add(new BasicNameValuePair("rluploaddate", curDate + " "
+					+ curTime));
+			params.add(new BasicNameValuePair("rluser", user + ""));
+			params.add(new BasicNameValuePair("rlcity", city + ""));
+			params.add(new BasicNameValuePair("rldesc", desc));
+			params.add(new BasicNameValuePair("rladdress", add));
+
+			// getting JSON Object
+			JSONObject json = jsonParser.makeHttpRequest(urlRepLost, "POST",
+					params);
+
+			// check log cat from response
+			Log.d("Add report lost", json.toString());
+
+			// check for success tag
+			try {
+				success = json.getInt("success");
+
+				if (success == 1) {
+					// successfully add report lost
+
+				} else {
+					// failed add report lost
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			// dismiss the dialog once done
+			pDialog.dismiss();
+			if (success == 1) {
+				Toast.makeText(getApplicationContext(),
+	            		"Lost Report Succesfully", Toast.LENGTH_LONG).show();
+				finish();
+
+			} else {
+				Toast.makeText(getApplicationContext(),
+	            		"Failed to Report Lost", Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 }

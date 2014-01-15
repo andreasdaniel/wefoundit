@@ -8,10 +8,33 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SearchResultActivity" >
 
-    <TextView
-        android:id="@+id/search_query"
+    <RadioGroup
+        android:id="@+id/radioGroup_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/radioButton_found"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Found" />
+
+        <RadioButton
+            android:id="@+id/radioButton_lost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:text="Lost" />
+    </RadioGroup>
+
+    <ListView
+        android:id="@+id/listView_search"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/radioGroup_type" >
+
+    </ListView>
 
 </RelativeLayout>

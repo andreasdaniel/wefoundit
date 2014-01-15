@@ -40,6 +40,7 @@ public class NativeDatabaseParser {
 		
 		categories.add(new Category(0, "<category>"));
 		countries.add(new Country("0", "<country>"));
+		cities.add(new City(0, "<city>", "", ""));
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;

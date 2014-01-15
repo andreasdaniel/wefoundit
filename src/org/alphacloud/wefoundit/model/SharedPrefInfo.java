@@ -6,5 +6,7 @@ public class SharedPrefInfo {
 	public final static String SESSION_IS_LOGIN_LABEL = "islogin";
 	public final static String SESSION_USERNAME_LABEL = "username";
 	public final static String SESSION_EMAIL_LABEL = "email";
+	public final static String SESSION_USERID_LABEL = "userid";
+	public final static String SESSION_PHONE_LABEL = "phone";
 	
 }

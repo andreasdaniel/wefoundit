@@ -1,5 +1,7 @@
 package org.alphacloud.wefoundit.model;
 
+import org.alphacloud.wefoundit.logic.ShareData;
+
 public class Country {
 	// fields
 	private String code;
@@ -25,6 +27,19 @@ public class Country {
 	
 	@Override
 	public String toString() {
+		return name;
+	}
+	
+	public static String getCountryNameByCode(String code) {
+		String name = "";
+		
+		for(Country c : ShareData.COUNTRIES) {
+			if(c.getCode().compareToIgnoreCase(code) == 0) {
+				name = c.getName();
+				break;
+			}
+		}
+		
 		return name;
 	}
 	

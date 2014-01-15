@@ -1,28 +1,44 @@
 package org.alphacloud.wefoundit;
 
+import org.alphacloud.wefoundit.adapter.FPSpinnerAdapter;
+
 import android.os.Bundle;
 import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SearchResultActivity extends Activity {
 	// fields
-	private TextView mQuery;
+	private ListView mSearchList;
+	private RadioGroup mRadioGroup;
+	
+	// front-page spinner
+	private String[] mSpinnerNames;
+	private FPSpinnerAdapter mSpinnerAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_result);
 		
+		// init
+		mSearchList = (ListView) findViewById(R.id.listView_search);
+		mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup_type);
+		
+		mRadioGroup.check(R.id.radioButton_found);
+		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		
-		mQuery = (TextView) findViewById(R.id.search_query);
 		
 		handleIntent(getIntent());
 	}
@@ -64,10 +80,18 @@ public class SearchResultActivity extends Activity {
              * 2. Making webrequest and displaying the data 
              * For now we just display the query only
              */
-            mQuery.setText("Search Query: " + query);
+            int selected = mRadioGroup.getCheckedRadioButtonId();
+            
+            if(selected == R.id.radioButton_found) {
+            	Toast.makeText(this,
+        				"Found", Toast.LENGTH_SHORT).show();
+            }
+            else {
+            	
+            }
  
         }
  
     }
-
+    
 }

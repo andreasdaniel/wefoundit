@@ -88,6 +88,16 @@
             android:name="org.alphacloud.wefoundit.ImageDetailActivity"
             android:label="@string/title_activity_image_detail" >
         </activity>
+        <activity
+            android:name="org.alphacloud.wefoundit.LoginActivity"
+            android:launchMode="singleTop"
+            android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name="org.alphacloud.wefoundit.RegisterActivity"
+            android:launchMode="singleTop"
+            android:label="@string/title_activity_register" >
+        </activity>
     </application>
 
 </manifest>

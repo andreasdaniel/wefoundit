@@ -13,9 +13,15 @@ import org.alphacloud.wefoundit.adapter.ReportPhotoListAdapter;
 import org.alphacloud.wefoundit.logic.GPSTracker;
 import org.alphacloud.wefoundit.logic.ImageHandler;
 import org.alphacloud.wefoundit.logic.LocationAddress;
+import org.alphacloud.wefoundit.logic.SessionManager;
 import org.alphacloud.wefoundit.logic.ShareData;
-import org.alphacloud.wefoundit.logic.UtilTool;
 import org.alphacloud.wefoundit.model.Category;
+import org.alphacloud.wefoundit.util.JSONParser;
+import org.alphacloud.wefoundit.util.UtilTool;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -23,8 +29,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.app.DialogFragment;
@@ -81,10 +89,20 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener, 
 	private ImageButton mGpsButton;
 	private GPSTracker gps;
 	
+	private ProgressDialog pDialog;
+	private JSONParser jsonParser;
+	private String urlRepFound = "http://140.113.210.89/wefoundit/reportfound.php";
+
+	private double lat, lon; // gps information
+
+	private SessionManager manager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_report_found);
+		
+		jsonParser = new JSONParser();
 		
 		// init fields
 		mCatSpinner = (Spinner) findViewById(R.id.spinner_foundcat);
@@ -98,6 +116,12 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener, 
 		mGallery = (Gallery) findViewById(R.id.gallery_foundpics);
 		mAccessGalleryButton= (ImageButton) findViewById(R.id.imagBtn_foundaccgal);
 		mCameraButton = (ImageButton) findViewById(R.id.imgBtn_foundcamera);
+		
+		manager = new SessionManager(this);
+		if(manager.isLogin()) {
+			mEmailEditText.setText(manager.getUserEmail());
+			mPhoneEditText.setText(manager.getUserPhone());
+		}
 		
 		initCustomActionBar();
 		initPictureGallery();
@@ -232,7 +256,21 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener, 
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				boolean satisfy = false;
+				
+				int cat = mCatSpinner.getSelectedItemPosition();
+				String email = mEmailEditText.getText().toString().trim();
+				String phone = mPhoneEditText.getText().toString().trim();
+				String desc = mDescEditText.getText().toString().trim();
+				
+				if(cat > 0 && email != "" && phone != "" & desc != "")
+					satisfy = true;
+				
+				if(satisfy)
+					new ReportFound().execute();
+				else
+					Toast.makeText(getApplicationContext(),
+		            		"Please check your field!", Toast.LENGTH_LONG).show();
 				
 			}
 		});
@@ -363,6 +401,86 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener, 
 	private void startNativeCamera() {
 		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 		startActivityForResult(intent, CAMERA_RCODE);
+	}
+	
+	class ReportFound extends AsyncTask<String, String, String> {
+		int success = 0;
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog(ReportFoundActivity.this);
+			pDialog.setMessage("Upload report found, please wait...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
+		}
+
+		protected String doInBackground(String... args) {
+			int cat = ShareData.CATEGORIES.get(
+					mCatSpinner.getSelectedItemPosition()).getId();
+			String date = mDateTextView.getText().toString();
+			String time = mTimeTextView.getText().toString();
+			int user = manager.getUserID();
+			String email = mEmailEditText.getText().toString();
+			String phone = mPhoneEditText.getText().toString();
+			String desc = mDescEditText.getText().toString();
+			// photo
+
+			//Log.d("report_found_data",cat + " " + date + " " + time + " " + user + " " + email + " " + phone + " " + desc);
+			
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("rfcat", cat + ""));
+			params.add(new BasicNameValuePair("rfdate", date + " " + time));
+			params.add(new BasicNameValuePair("rfuser", user + ""));
+			params.add(new BasicNameValuePair("rflat", String.valueOf(lat)));
+			params.add(new BasicNameValuePair("rflong", String.valueOf(lon)));
+			params.add(new BasicNameValuePair("rfemail", email));
+			params.add(new BasicNameValuePair("rfphone", phone));
+			params.add(new BasicNameValuePair("rfdesc", desc));
+
+			// getting JSON Object
+			JSONObject json = jsonParser.makeHttpRequest(urlRepFound, "POST",
+					params);
+
+			// check log cat from response
+			Log.d("Add report found", json.toString());
+
+			// check for success tag
+			try {
+				success = json.getInt("success");
+
+				if (success == 1) {
+					// successfully add report found
+
+				} else {
+					// failed add report found
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			// dismiss the dialog once done
+			pDialog.dismiss();
+			// check for success tag
+			if (success == 1) {
+				Toast.makeText(getApplicationContext(),
+	            		"Found Report Succesfully", Toast.LENGTH_LONG).show();
+				finish();
+
+			} else {
+				Toast.makeText(getApplicationContext(),
+	            		"Failed to Report Found", Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 	
 }

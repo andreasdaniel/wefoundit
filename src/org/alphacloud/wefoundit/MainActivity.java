@@ -1,6 +1,11 @@
 package org.alphacloud.wefoundit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.alphacloud.wefoundit.adapter.FPSpinnerAdapter;
+import org.alphacloud.wefoundit.logic.SessionManager;
 import org.alphacloud.wefoundit.util.NativeDatabaseParser;
 
 import android.os.Bundle;
@@ -26,19 +31,27 @@ public class MainActivity extends Activity implements OnNavigationListener {
 	// side-bar menu
 	private DrawerLayout mDrawerLayout;
 	private String[] mMenuNames;
+	private List<String> mMenuNamesList;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private CharSequence mTitle;
 	private boolean isFrontPage;
 	private boolean isDrawerOpen;
+	private ArrayAdapter<String> mNavDrawerAdapter;
 	// front-page spinner
 	private String[] mSpinnerNames;
 	private FPSpinnerAdapter mSpinnerAdapter;
+	
+	public SessionManager sessionManager;
+	
+	private int frag;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		sessionManager = new SessionManager(this);
 		
 		createFPSpinner();
 		createSideBarMenu(savedInstanceState);
@@ -86,6 +99,9 @@ public class MainActivity extends Activity implements OnNavigationListener {
 			Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
 			startActivity(intent);
 			return true;
+		case R.id.action_refresh:
+			refreshAction();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -111,32 +127,116 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		getActionBar().setTitle(mTitle);
 	}
 	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(mDrawerLayout != null){
+			changeNavigationDrawer();
+		}
+	}
+	
+	private void refreshAction() {
+		Fragment fragment = null;
+		switch (frag) {
+		case 0:
+			fragment = new FPFoundFragment();
+			break;
+		case 1:
+			fragment = new FPLostFragment();
+			break;
+			
+		default:
+			break;
+		}
+		
+		if(fragment != null)
+			loadMainFragment(fragment);
+	}
+	
 	// action after click on side-bar menu
+	private void displayNextViewLogin(int position) {
+		// update the main content by replacing fragments
+		Fragment fragment = null;
+		Intent intent;
+		isFrontPage = false;
+		switch (position) {
+		case 0: // navigate to frontpage
+			//changeSpinnerMenu(0);
+			isFrontPage = true;
+			break;
+		case 1: // look user's profile
+			fragment = new ProfileFragment();
+			break;
+		case 2: // look user's lost list
+			fragment = new LostThingFragment();
+			frag = 2;
+			break;
+		case 3: // Look user's found list
+			fragment = new FoundThingFragment();
+			frag = 3;
+			break;
+		case 4: // Report Found
+			intent = new Intent(getApplicationContext(), ReportFoundActivity.class);
+			startActivity(intent);
+			break;
+		case 5: // Report Lost
+			intent = new Intent(getApplicationContext(), ReportLostActivity.class);
+			startActivity(intent);
+			break;
+		case 6: // logout
+			sessionManager.logout();
+			changeNavigationDrawer();
+			break;
+
+		default:
+			break;
+		}
+
+		if (fragment != null) {
+			loadMainFragment(fragment);
+			// update selected item and title, then close the drawer
+			mDrawerList.setItemChecked(position, true);
+			mDrawerList.setSelection(position);
+			setTitle(mMenuNames[position]);
+			mDrawerLayout.closeDrawer(mDrawerList);
+			
+			toggleSpinner();
+		} 
+		else if(isFrontPage) {
+			mDrawerList.setItemChecked(position, true);
+			mDrawerList.setSelection(position);
+			setTitle(mMenuNames[position]);
+			mDrawerLayout.closeDrawer(mDrawerList);
+			
+			toggleSpinner();
+		}
+		else {
+			// error in creating fragment
+			//Log.e("MainActivity", "Error in creating fragment");
+			mDrawerLayout.closeDrawer(mDrawerList);
+		}
+	}
+	
 	private void displayNextView(int position) {
 		// update the main content by replacing fragments
 		Fragment fragment = null;
 		Intent intent;
 		isFrontPage = false;
 		switch (position) {
-		case 0:
+		case 0:// navigate to front page
 			//changeSpinnerMenu(0);
 			isFrontPage = true;
 			break;
-		case 1:
-			fragment = new ProfileFragment();
-			break;
-		case 2:
-			fragment = new LostThingFragment();
-			break;
-		case 3:
-			fragment = new FoundThingFragment();
-			break;
-		case 4:
-			intent = new Intent(getApplicationContext(), ReportFoundActivity.class);
+		case 1: // login
+			intent = new Intent(getApplicationContext(), LoginActivity.class);
 			startActivity(intent);
 			break;
-		case 5:
-			intent = new Intent(getApplicationContext(), ReportLostActivity.class);
+		case 2: // register
+			intent = new Intent(getApplicationContext(), RegisterActivity.class);
+			startActivity(intent);
+			break;
+		case 3: //report found
+			intent = new Intent(getApplicationContext(), ReportFoundActivity.class);
 			startActivity(intent);
 			break;
 
@@ -146,7 +246,6 @@ public class MainActivity extends Activity implements OnNavigationListener {
 
 		if (fragment != null) {
 			loadMainFragment(fragment);
-			
 			// update selected item and title, then close the drawer
 			mDrawerList.setItemChecked(position, true);
 			mDrawerList.setSelection(position);
@@ -175,7 +274,10 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			displayNextView(position);
+			if(sessionManager.isLogin())
+				displayNextViewLogin(position);
+			else
+				displayNextView(position);
 		}
 		
 	}
@@ -187,9 +289,11 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		switch (itemPosition) {
 		case 0:
 			fragment = new FPFoundFragment();
+			frag = 0;
 			break;
 		case 1:
 			fragment = new FPLostFragment();
+			frag = 1;
 			break;
 			
 		default:
@@ -211,7 +315,12 @@ public class MainActivity extends Activity implements OnNavigationListener {
 	private void createSideBarMenu(Bundle savedInstanceState) {
 		isFrontPage = true;
 		
-		mMenuNames = getResources().getStringArray(R.array.menu_names);
+		if(sessionManager.isLogin())
+			mMenuNames = getResources().getStringArray(R.array.menu_names);
+		else
+			mMenuNames = getResources().getStringArray(R.array.menu_names_no);
+		mMenuNamesList = new ArrayList<String>();
+		mMenuNamesList.addAll(Arrays.asList(mMenuNames));
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 		
@@ -219,8 +328,10 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		mTitle = getTitle();
 		
 		// set side-bar menu
+		mNavDrawerAdapter = new ArrayAdapter<String>(this, R.layout.list_item_drawer, mMenuNamesList);
+		
 		mDrawerList.setOnItemClickListener(new SideBarClickListener());
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item_drawer, mMenuNames));
+		mDrawerList.setAdapter(mNavDrawerAdapter);
 		
 		// enabling action bar app icon and behaving it as toggle button
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -276,6 +387,17 @@ public class MainActivity extends Activity implements OnNavigationListener {
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction()
 				.replace(R.id.frame_container, fragment).commit();
+	}
+	
+	private void changeNavigationDrawer() {
+		if(sessionManager.isLogin())
+			mMenuNames = getResources().getStringArray(R.array.menu_names);
+		else
+			mMenuNames = getResources().getStringArray(R.array.menu_names_no);
+		mMenuNamesList.clear();
+		mMenuNamesList.addAll(Arrays.asList(mMenuNames));
+		
+		mNavDrawerAdapter.notifyDataSetChanged();
 	}
 	
 	private void changeSpinnerMenu(int position) {

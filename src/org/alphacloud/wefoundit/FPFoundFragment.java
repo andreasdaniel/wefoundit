@@ -1,13 +1,26 @@
 package org.alphacloud.wefoundit;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.alphacloud.wefoundit.adapter.FPNewsListAdapter;
 import org.alphacloud.wefoundit.adapter.model.FPNewsListItem;
+import org.alphacloud.wefoundit.logic.LocationAddress;
+import org.alphacloud.wefoundit.logic.ShareData;
+import org.alphacloud.wefoundit.model.FoundThing;
+import org.alphacloud.wefoundit.util.JSONParser;
+import org.apache.http.NameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +35,10 @@ public class FPFoundFragment extends Fragment {
 	private Button mLoadBtn;
 	private FPNewsListAdapter adapter;
 	private ArrayList<FPNewsListItem> foundItems;
+	private ProgressDialog pDialog;
+	private JSONParser jsonParser;
+	private String urlFPFound;
+	private LinkedList<FoundThing> ftList;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,8 +56,10 @@ public class FPFoundFragment extends Fragment {
 		mFoundList = (ListView) view.findViewById(R.id.listView_foundnews);
 		mLoadBtn = new Button(getActivity());
 		foundItems = new ArrayList<FPNewsListItem>();
-		loadFoundItems();
+		//loadFoundItems();
 		adapter = new FPNewsListAdapter(getActivity(), foundItems);
+		
+		ftList = new LinkedList<FoundThing>();
 		
 		mLoadBtn.setText("Load More");
 		mFoundList.addFooterView(mLoadBtn);
@@ -56,18 +75,111 @@ public class FPFoundFragment extends Fragment {
 				Intent intent = new Intent();
 				intent.setClass(getActivity(), ThingActivity.class);
 				intent.putExtra("PARENT_KEY", 11);
+				intent.putExtra("DATA", ftList.get(position));
 				
 				getActivity().startActivity(intent);
 			}
 		});
+		
+		urlFPFound = "http://140.113.210.89/wefoundit/listfound.php";
+		jsonParser = new JSONParser();
+		
+		new HomeFound().execute();
 	}
 	
 	private void loadFoundItems() {
 		FPNewsListItem item;
 		
-		item = new FPNewsListItem("Bag", "Bag found in Taichung park", 1);
-		foundItems.add(item);
-		item = new FPNewsListItem("Smartphone", "Smartphone found in Hsinchu Station", 1);
-		foundItems.add(item);
+		Log.d("FT_LIST#", ftList.size()+"");
+		
+		for(FoundThing ft : ftList) {
+			String location = "";
+			try	{
+				location = (new LocationAddress(getActivity(), ft.getFoundLat(), ft.getFoundLong())).getAddress();
+			} catch(Exception e) {
+				location = "not found";
+			}
+			
+			ft.cat = ShareData.CATEGORIES.get(ft.getFoundCat()).getName();
+			ft.loc = location.replace("null", "").replace("  ", " ");
+			
+			String title = ft.cat + " on " + ft.getFoundDate();
+			item = new FPNewsListItem(title, " in " + ft.loc, 1);
+			foundItems.add(item);
+		}
+		
+		adapter.notifyDataSetChanged();
+		
+//		item = new FPNewsListItem("Bag", "Bag found in Taichung park", 1);
+//		foundItems.add(item);
+//		item = new FPNewsListItem("Smartphone", "Smartphone found in Hsinchu Station", 1);
+//		foundItems.add(item);
 	}
+	
+	class HomeFound extends AsyncTask<String, String, String> {
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			pDialog = new ProgressDialog((MainActivity)getActivity());
+			pDialog.setMessage("Get list found, please wait...");
+			pDialog.setIndeterminate(false);
+			pDialog.setCancelable(true);
+			pDialog.show();
+		}
+
+		protected String doInBackground(String... args) {
+			// Building Parameters
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+			// getting JSON Object
+			JSONObject json = jsonParser.makeHttpRequest(urlFPFound, "POST",
+					params);
+
+			// check log cat from response
+			Log.d("List found", json.toString());
+
+			// check for success tag
+			try {
+				int success = json.getInt("success");
+
+				if (success == 1) {
+					// successfully get list home found
+					JSONArray found = json.getJSONArray("foundthing");
+					//ftList = new LinkedList<FoundThing>();
+					Log.d("FOUND_JSON#", found.length()+"");
+					for (int i = 0; i < found.length(); i++) {
+                        JSONObject c = found.getJSONObject(i);
+                        
+                        // Storing each json item in variable
+                        FoundThing ft = new FoundThing();
+                        ft.setFoundCat(c.getInt("foundcategory"));
+                        ft.setFoundDate(c.getString("founddate"));
+                        ft.setFoundDesc(c.getString("founddescription"));
+                        ft.setFoundId(c.getInt("foundid"));
+                        ft.setFoundIsClaim(c.getInt("foundisclaim"));
+                        ft.setFoundLat(c.getDouble("foundlatitude"));
+                        ft.setFoundLong(c.getDouble("foundlongitude"));
+                        ft.setFoundTempEmail(c.getString("foundtempemail"));
+                        ft.setFoundTempPhone(c.getString("foundtempphone"));
+                        ft.setFoundUser(c.getInt("founduser"));
+                        ftList.add(ft);                       
+                    }
+					
+				} else {
+					// failed add report found
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		protected void onPostExecute(String file_url) {
+			loadFoundItems();
+			// dismiss the dialog once done
+			pDialog.dismiss();
+		}
+	}
+	
 }

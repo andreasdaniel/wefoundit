@@ -85,15 +85,6 @@
         android:text="Have not been claimed"
         android:textSize="7pt" />
 
-    <TextView
-        android:id="@+id/txtview_thingclaim"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtview_thingplace"
-        android:padding="10dip"
-        android:text="Have not been claimed"
-        android:textSize="7pt" />
-
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
