@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alphacloud.wefoundit.logic.SessionManager;
+import org.alphacloud.wefoundit.model.DbConn;
 import org.alphacloud.wefoundit.util.JSONParser;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -31,8 +32,6 @@ public class LoginActivity extends Activity {
 	EditText etpassword;
 	Button tvlogin;
 	Button tvsignup;
-
-	private static final String urlLogin = "http://140.113.210.89/wefoundit/login.php";
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -97,7 +96,7 @@ public class LoginActivity extends Activity {
 			Log.d("Building Parameters", "okay");
 
 			// getting login details by making HTTP request
-			JSONObject json = jp.makeHttpRequest(urlLogin, "POST", nvp);
+			JSONObject json = jp.makeHttpRequest(DbConn.LOGIN, "POST", nvp);
 
 			// check your log for json response
 			Log.d("Login", json.toString());

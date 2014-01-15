@@ -9,6 +9,7 @@ import org.alphacloud.wefoundit.adapter.model.FPNewsListItem;
 import org.alphacloud.wefoundit.logic.ShareData;
 import org.alphacloud.wefoundit.model.City;
 import org.alphacloud.wefoundit.model.Country;
+import org.alphacloud.wefoundit.model.DbConn;
 import org.alphacloud.wefoundit.model.LostThing;
 import org.alphacloud.wefoundit.util.JSONParser;
 import org.apache.http.NameValuePair;
@@ -41,7 +42,6 @@ public class LostThingFragment extends Fragment {
 	private ProgressDialog pDialog;
 	private JSONParser jsonParser;
 	private LinkedList<LostThing> ltList;
-	private String urlMyLost;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,7 +58,6 @@ public class LostThingFragment extends Fragment {
 		// init fields
 		jsonParser = new JSONParser();
 		ltList = new LinkedList<LostThing>();
-		urlMyLost = "http://140.113.210.89/wefoundit/mylost.php";
 		
 		mLostList = (ListView) view.findViewById(R.id.listView_lostthings);
 		mLoadBtn = new Button(getActivity());
@@ -139,7 +138,7 @@ public class LostThingFragment extends Fragment {
 			params.add(new BasicNameValuePair("userid", userid +""));
 
 			// getting JSON Object
-			JSONObject json = jsonParser.makeHttpRequest(urlMyLost, "POST",
+			JSONObject json = jsonParser.makeHttpRequest(DbConn.USER_LOST, "POST",
 					params);
 
 			// check log cat from response

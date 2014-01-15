@@ -8,6 +8,7 @@ import org.alphacloud.wefoundit.adapter.FPNewsListAdapter;
 import org.alphacloud.wefoundit.adapter.model.FPNewsListItem;
 import org.alphacloud.wefoundit.logic.LocationAddress;
 import org.alphacloud.wefoundit.logic.ShareData;
+import org.alphacloud.wefoundit.model.DbConn;
 import org.alphacloud.wefoundit.model.FoundThing;
 import org.alphacloud.wefoundit.util.JSONParser;
 import org.apache.http.NameValuePair;
@@ -39,7 +40,6 @@ public class FoundThingFragment extends Fragment {
 	
 	private ProgressDialog pDialog;
 	private JSONParser jsonParser;
-	private String urlMyFound;
 	private LinkedList<FoundThing> ftList;
 	
 	@Override
@@ -56,7 +56,6 @@ public class FoundThingFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		// init fields
 		jsonParser = new JSONParser();
-		urlMyFound = "http://140.113.210.89/wefoundit/myfound.php";
 		ftList = new LinkedList<FoundThing>();
 		
 		mFoundList = (ListView) view.findViewById(R.id.listView_foundthings);
@@ -100,15 +99,15 @@ public class FoundThingFragment extends Fragment {
 		Log.d("FT_LIST#", ftList.size()+"");
 		
 		for(FoundThing ft : ftList) {
-			String location = "";
-			try	{
-				location = (new LocationAddress(getActivity(), ft.getFoundLat(), ft.getFoundLong())).getAddress();
-			} catch(Exception e) {
-				location = "not found";
-			}
+//			String location = "";
+//			try	{
+//				location = (new LocationAddress(getActivity(), ft.getFoundLat(), ft.getFoundLong())).getAddress();
+//			} catch(Exception e) {
+//				location = "not found";
+//			}
 			
 			ft.cat = ShareData.CATEGORIES.get(ft.getFoundCat()).getName();
-			ft.loc = location.replace("null", "").replace("  ", " ");
+			//ft.loc = location.replace("null", "").replace("  ", " ");
 			
 			String title = ft.cat + " on " + ft.getFoundDate();
 			item = new FPNewsListItem(title, " in " + ft.loc, 1);
@@ -143,7 +142,7 @@ public class FoundThingFragment extends Fragment {
 			params.add(new BasicNameValuePair("userid", userid + ""));
 
 			// getting JSON Object
-			JSONObject json = jsonParser.makeHttpRequest(urlMyFound, "POST",
+			JSONObject json = jsonParser.makeHttpRequest(DbConn.USER_FOUND, "POST",
 					params);
 
 			// check log cat from response
@@ -169,6 +168,7 @@ public class FoundThingFragment extends Fragment {
 						ft.setFoundIsClaim(c.getInt("foundisclaim"));
 						ft.setFoundLat(c.getDouble("foundlatitude"));
 						ft.setFoundLong(c.getDouble("foundlongitude"));
+						ft.loc = c.getString("foundaddress");
 						ft.setFoundTempEmail(c.getString("foundtempemail"));
 						ft.setFoundTempPhone(c.getString("foundtempphone"));
 						ft.setFoundUser(c.getInt("founduser"));

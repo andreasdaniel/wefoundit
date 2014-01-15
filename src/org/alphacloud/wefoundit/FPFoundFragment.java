@@ -8,6 +8,7 @@ import org.alphacloud.wefoundit.adapter.FPNewsListAdapter;
 import org.alphacloud.wefoundit.adapter.model.FPNewsListItem;
 import org.alphacloud.wefoundit.logic.LocationAddress;
 import org.alphacloud.wefoundit.logic.ShareData;
+import org.alphacloud.wefoundit.model.DbConn;
 import org.alphacloud.wefoundit.model.FoundThing;
 import org.alphacloud.wefoundit.util.JSONParser;
 import org.apache.http.NameValuePair;
@@ -37,7 +38,6 @@ public class FPFoundFragment extends Fragment {
 	private ArrayList<FPNewsListItem> foundItems;
 	private ProgressDialog pDialog;
 	private JSONParser jsonParser;
-	private String urlFPFound;
 	private LinkedList<FoundThing> ftList;
 	
 	@Override
@@ -81,7 +81,6 @@ public class FPFoundFragment extends Fragment {
 			}
 		});
 		
-		urlFPFound = "http://140.113.210.89/wefoundit/listfound.php";
 		jsonParser = new JSONParser();
 		
 		new HomeFound().execute();
@@ -93,15 +92,15 @@ public class FPFoundFragment extends Fragment {
 		Log.d("FT_LIST#", ftList.size()+"");
 		
 		for(FoundThing ft : ftList) {
-			String location = "";
-			try	{
-				location = (new LocationAddress(getActivity(), ft.getFoundLat(), ft.getFoundLong())).getAddress();
-			} catch(Exception e) {
-				location = "not found";
-			}
+//			String location = "";
+//			try	{
+//				location = (new LocationAddress(getActivity(), ft.getFoundLat(), ft.getFoundLong())).getAddress();
+//			} catch(Exception e) {
+//				location = "not found";
+//			}
 			
 			ft.cat = ShareData.CATEGORIES.get(ft.getFoundCat()).getName();
-			ft.loc = location.replace("null", "").replace("  ", " ");
+			//ft.loc = location.replace("null", "").replace("  ", " ");
 			
 			String title = ft.cat + " on " + ft.getFoundDate();
 			item = new FPNewsListItem(title, " in " + ft.loc, 1);
@@ -132,7 +131,7 @@ public class FPFoundFragment extends Fragment {
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 			// getting JSON Object
-			JSONObject json = jsonParser.makeHttpRequest(urlFPFound, "POST",
+			JSONObject json = jsonParser.makeHttpRequest(DbConn.LIST_FOUND, "POST",
 					params);
 
 			// check log cat from response
@@ -158,6 +157,7 @@ public class FPFoundFragment extends Fragment {
                         ft.setFoundId(c.getInt("foundid"));
                         ft.setFoundIsClaim(c.getInt("foundisclaim"));
                         ft.setFoundLat(c.getDouble("foundlatitude"));
+                        ft.loc = c.getString("foundaddress");
                         ft.setFoundLong(c.getDouble("foundlongitude"));
                         ft.setFoundTempEmail(c.getString("foundtempemail"));
                         ft.setFoundTempPhone(c.getString("foundtempphone"));

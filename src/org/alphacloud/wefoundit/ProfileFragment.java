@@ -3,6 +3,7 @@ package org.alphacloud.wefoundit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alphacloud.wefoundit.model.DbConn;
 import org.alphacloud.wefoundit.util.JSONParser;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -51,8 +52,6 @@ public class ProfileFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		
 		jp = new JSONParser();
-		urlProf = "http://140.113.210.89/wefoundit/profile.php";
-		urlUpProf = "http://140.113.210.89/wefoundit/updateprofile.php";
 		
 		// init fields
 		mUserTextView = (TextView) view.findViewById(R.id.txtView_profuser1);
@@ -100,7 +99,7 @@ public class ProfileFragment extends Fragment {
 			Log.d("Building Parameters", "okay");
 
 			// getting login details by making HTTP request
-			JSONObject json = jp.makeHttpRequest(urlProf, "POST", nvp);
+			JSONObject json = jp.makeHttpRequest(DbConn.PROFILE, "POST", nvp);
 
 			// json success tag
 			try {
@@ -186,7 +185,7 @@ public class ProfileFragment extends Fragment {
 			Log.d("Building Parameters", "okay");
 
 			// getting login details by making HTTP request
-			JSONObject json = jp.makeHttpRequest(urlUpProf, "POST", nvp);
+			JSONObject json = jp.makeHttpRequest(DbConn.UPDATE_PROFILE, "POST", nvp);
 
 			// check your log for json response
 			Log.d("Login", json.toString());

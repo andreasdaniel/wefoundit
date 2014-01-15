@@ -92,6 +92,10 @@
             <column name="categoryId">19</column>
             <column name="categoryName">Vehicles</column>
         </table>
+		<table name="category">
+            <column name="categoryId">99</column>
+            <column name="categoryName">Others</column>
+        </table>
         <!-- Table city -->
         <table name="city">
             <column name="cityId">1</column>

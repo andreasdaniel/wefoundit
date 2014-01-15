@@ -3,6 +3,7 @@ package org.alphacloud.wefoundit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alphacloud.wefoundit.model.DbConn;
 import org.alphacloud.wefoundit.util.JSONParser;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -30,8 +31,6 @@ public class RegisterActivity extends Activity{
 	EditText userpassword;
 	EditText userphone;
 	Button reg;
-	
-	private static String url_reg = "http://140.113.210.89/wefoundit/register.php";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,7 @@ public class RegisterActivity extends Activity{
 	 * Background Async Task to Register User
 	 * */
 	class Register extends AsyncTask<String, String, String> {
-
+		int success = 0;
 		/**
 		 * Before starting background thread Show Progress Dialog
 		 * */
@@ -90,7 +89,7 @@ public class RegisterActivity extends Activity{
 
 			// getting JSON Object
 			// Note that register user url accepts POST method
-			JSONObject json = jsonParser.makeHttpRequest(url_reg,
+			JSONObject json = jsonParser.makeHttpRequest(DbConn.REGISTER,
 					"POST", params);
 			
 			// check log cat from response
@@ -98,16 +97,9 @@ public class RegisterActivity extends Activity{
 
 			// check for success tag
 			try {
-				int success = json.getInt("success");
+				success = json.getInt("success");
 
-				if (success == 1) {
-					Toast.makeText(getApplicationContext(),
-		            		"Registration Success", Toast.LENGTH_LONG).show();
-					
-				} else {
-					Toast.makeText(getApplicationContext(),
-		            		"Registration Failed", Toast.LENGTH_LONG).show();
-				}
+				
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -121,6 +113,14 @@ public class RegisterActivity extends Activity{
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog once done
 			pDialog.dismiss();
+			if (success == 1) {
+				Toast.makeText(getApplicationContext(),
+	            		"Registration Success", Toast.LENGTH_LONG).show();
+				
+			} else {
+				Toast.makeText(getApplicationContext(),
+	            		"Registration Failed", Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 }

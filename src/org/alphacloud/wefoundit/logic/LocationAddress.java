@@ -31,17 +31,17 @@ public class LocationAddress {
 				Address address = addresses.get(0);
 				StringBuilder addrBuilder = new StringBuilder();
 				
+				//String addr = address.getFeatureName();
 				String city = address.getLocality();
 				String district = address.getSubAdminArea();
 				String state = address.getAdminArea();
 				String country = address.getCountryName();
 				
-				
 				for(int i = 0; i < address.getMaxAddressLineIndex(); i++) {
 					addrBuilder.append(address.getAddressLine(i)).append(", ");
 				}
 				
-				output = city + " " + district + " " + state + " " + country;
+				output = addrBuilder.toString() + city + " " + district + " " + state + " " + country;
 			}
 			
 		} catch (IOException e) {
