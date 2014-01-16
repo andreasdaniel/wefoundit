@@ -4,15 +4,22 @@ public class FPNewsListItem {
 	// fields
 	private String title;
 	private String desc;
-	private int icon; // resouce id of the icon
+	private String icon; // resouce id of the icon
 	
-	public FPNewsListItem(String title, String desc, int icon) {
+	public FPNewsListItem(String title, String desc, String icon) {
 		super();
 		this.title = title;
 		this.desc = desc;
 		this.icon = icon;
 	}
 
+	public FPNewsListItem(String title, String desc) {
+		super();
+		this.title = title;
+		this.desc = desc;
+		this.icon = "";
+	}
+	
 	public String getTitle() {
 		return title;
 	}
@@ -29,11 +36,11 @@ public class FPNewsListItem {
 		this.desc = desc;
 	}
 
-	public int getIcon() {
+	public String getIcon() {
 		return icon;
 	}
 
-	public void setIcon(int icon) {
+	public void setIcon(String icon) {
 		this.icon = icon;
 	}
 	

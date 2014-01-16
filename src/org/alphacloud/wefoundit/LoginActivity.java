@@ -61,6 +61,8 @@ public class LoginActivity extends Activity {
 				startActivity(i);
 			}
 		});
+		
+		getActionBar().setDisplayShowHomeEnabled(true);
 	}
 
 	public class Login extends AsyncTask<String, String, String> {

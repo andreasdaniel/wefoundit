@@ -46,6 +46,8 @@ public class RegisterActivity extends Activity{
 
 		// Create button
 		reg = (Button) findViewById(R.id.but_regsignup);
+		
+		getActionBar().setDisplayShowHomeEnabled(true);
 	}
 	
 	public void signup(View view) {

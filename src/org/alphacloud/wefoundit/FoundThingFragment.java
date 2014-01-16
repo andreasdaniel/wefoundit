@@ -110,7 +110,12 @@ public class FoundThingFragment extends Fragment {
 			//ft.loc = location.replace("null", "").replace("  ", " ");
 			
 			String title = ft.cat + " on " + ft.getFoundDate();
-			item = new FPNewsListItem(title, " in " + ft.loc, 1);
+			item = new FPNewsListItem(title, " in " + ft.loc);
+			
+			if(!ft.getPicURLs().isEmpty()) {
+				item.setIcon(ft.getPicURLs().get(0));
+			}
+			
 			foundItems.add(item);
 		}
 		
@@ -172,6 +177,9 @@ public class FoundThingFragment extends Fragment {
 						ft.setFoundTempEmail(c.getString("foundtempemail"));
 						ft.setFoundTempPhone(c.getString("foundtempphone"));
 						ft.setFoundUser(c.getInt("founduser"));
+						
+						ft.setPicURLs(getPics(ft.getFoundId()));
+						
 						ftList.add(ft);
 					}
 
@@ -190,6 +198,45 @@ public class FoundThingFragment extends Fragment {
 			pDialog.dismiss();
 			loadFoundItems();
 		}
+		
+		private List<String> getPics(int id) {
+			List<String> pics = new ArrayList<String>();
+			
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("id", id+""));
+			
+			JSONObject json = jsonParser.makeHttpRequest(DbConn.PIC_FOUND, "GET",
+					params);
+			
+			try {
+				int success = json.getInt("success");
+				
+				Log.d("fetch_PICs", id+": "+success+"");
+				
+				if (success == 1) {
+					// successfully get list home found
+					JSONArray found = json.getJSONArray("foundpics");
+					//ftList = new LinkedList<FoundThing>();
+					Log.d("FOUND_PIC#", found.length()+"");
+					for (int i = 0; i < found.length(); i++) {
+                        JSONObject c = found.getJSONObject(i);
+                        
+                        // Storing each json item in variable
+                        String url = c.getString("picturefoundlocation");
+                        
+                        pics.add(url);                       
+                    }
+					
+				} else {
+					// failed add report found
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			return pics;
+		}
+		
 	}
 	
 }

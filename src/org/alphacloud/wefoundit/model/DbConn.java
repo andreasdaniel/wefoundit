@@ -19,4 +19,6 @@ public class DbConn {
 	public static final String UPLOAD_IMAGE = DbConn.MAIN_URL + "uploadimage.php";
 	public static final String SAVE_PIC_FOUND = DbConn.MAIN_URL + "savepicfound.php";
 	public static final String SAVE_PIC_LOST = DbConn.MAIN_URL + "savepiclost.php";
+	public static final String PIC_FOUND = DbConn.MAIN_URL + "picfound.php";
+	public static final String PIC_LOST = DbConn.MAIN_URL + "piclost.php";
 }

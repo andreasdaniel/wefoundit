@@ -5,8 +5,11 @@ import java.util.List;
 import org.alphacloud.wefoundit.adapter.model.FPNewsListItem;
 import org.alphacloud.wefoundit.R;
 
+import com.squareup.picasso.Picasso;
+
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +21,13 @@ public class FPNewsListAdapter extends BaseAdapter {
 	// fields
 	private Context context;
 	private List<FPNewsListItem> items;
-
+	//ImageLoader imageLoader;;
+	
 	public FPNewsListAdapter(Context context, List<FPNewsListItem> items) {
 		super();
 		this.context = context;
 		this.items = items;
+		//imageLoader = new ImageLoader(context);
 	}
 
 	@Override
@@ -58,8 +63,21 @@ public class FPNewsListAdapter extends BaseAdapter {
 		// imgIcon.setImageResource(items.get(position).getIcon());
 		txtTitle.setText(items.get(position).getTitle());
 		txtDesc.setText(items.get(position).getDesc());
+		String icon = items.get(position).getIcon();
+		if(icon != "") {
+			Log.d("ICON_ADAPTER", position + ": " + icon);
+			Picasso.with(context).load(icon).resize(100, 100).into(imgIcon);
+			//imageLoader.DisplayImage(icon, imgIcon);
+		}
 
 		return convertView;
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		// TODO Auto-generated method stub
+		super.finalize();
+		//imageLoader.clearCache();
+	}
+	
 }

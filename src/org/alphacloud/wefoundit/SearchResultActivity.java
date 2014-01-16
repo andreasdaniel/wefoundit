@@ -51,6 +51,8 @@ public class SearchResultActivity extends Activity {
 
 	private boolean isFoundChoosen = true;
 
+	JSONParser jParser = new JSONParser();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -158,7 +160,6 @@ public class SearchResultActivity extends Activity {
 
 		@Override
 		protected String doInBackground(String... args) {
-			JSONParser jParser = new JSONParser();
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("search", args[0]));
 
@@ -192,6 +193,9 @@ public class SearchResultActivity extends Activity {
 						ft.setFoundTempEmail(c.getString("foundtempemail"));
 						ft.setFoundTempPhone(c.getString("foundtempphone"));
 						ft.setFoundUser(c.getInt("founduser"));
+						
+						ft.setPicURLs(getPics(ft.getFoundId()));
+						
 						ftList.add(ft);
 					}
 
@@ -210,6 +214,44 @@ public class SearchResultActivity extends Activity {
 			loadFoundItems();
 			pDialog.dismiss();
 		}
+		
+		private List<String> getPics(int id) {
+			List<String> pics = new ArrayList<String>();
+			
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("id", id+""));
+			
+			JSONObject json = jParser.makeHttpRequest(DbConn.PIC_FOUND, "GET",
+					params);
+			
+			try {
+				int success = json.getInt("success");
+				
+				Log.d("fetch_PICs", id+": "+success+"");
+				
+				if (success == 1) {
+					// successfully get list home found
+					JSONArray found = json.getJSONArray("foundpics");
+					//ftList = new LinkedList<FoundThing>();
+					Log.d("FOUND_PIC#", found.length()+"");
+					for (int i = 0; i < found.length(); i++) {
+                        JSONObject c = found.getJSONObject(i);
+                        
+                        // Storing each json item in variable
+                        String url = c.getString("picturefoundlocation");
+                        
+                        pics.add(url);                       
+                    }
+					
+				} else {
+					// failed add report found
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			return pics;
+		}
 	}
 
 	private class LostSearcher extends AsyncTask<String, String, String> {
@@ -225,7 +267,6 @@ public class SearchResultActivity extends Activity {
 
 		@Override
 		protected String doInBackground(String... args) {
-			JSONParser jParser = new JSONParser();
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("search", args[0]));
 
@@ -258,6 +299,9 @@ public class SearchResultActivity extends Activity {
 						lt.setLostUser(c.getInt("lostuser"));
 						lt.setLostEmail(c.getString("lostemail"));
 						lt.setLostPhone(c.getString("lostphone"));
+						
+						lt.setPicURLs(getPics(lt.getLostId()));
+						
 						ltList.add(lt);
 					}
 
@@ -275,6 +319,44 @@ public class SearchResultActivity extends Activity {
 		protected void onPostExecute(String result) {
 			loadLostItems();
 			pDialog.dismiss();
+		}
+		
+		private List<String> getPics(int id) {
+			List<String> pics = new ArrayList<String>();
+			
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("id", id+""));
+			
+			JSONObject json = jParser.makeHttpRequest(DbConn.PIC_LOST, "GET",
+					params);
+			
+			try {
+				int success = json.getInt("success");
+				
+				Log.d("fetch_PICs", id+": "+success+"");
+				
+				if (success == 1) {
+					// successfully get list home found
+					JSONArray found = json.getJSONArray("lostpics");
+					//ftList = new LinkedList<FoundThing>();
+					Log.d("FOUND_PIC#", found.length()+"");
+					for (int i = 0; i < found.length(); i++) {
+                        JSONObject c = found.getJSONObject(i);
+                        
+                        // Storing each json item in variable
+                        String url = c.getString("picturelostlocation");
+                        
+                        pics.add(url);                       
+                    }
+					
+				} else {
+					// failed add report found
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			return pics;
 		}
 	}
 
@@ -296,7 +378,12 @@ public class SearchResultActivity extends Activity {
 			ft.loc = location.replace("null", "").replace("  ", " ");
 
 			String title = ft.cat + " on " + ft.getFoundDate();
-			item = new FPNewsListItem(title, " in " + ft.loc, 1);
+			item = new FPNewsListItem(title, " in " + ft.loc);
+			
+			if(!ft.getPicURLs().isEmpty()) {
+				item.setIcon(ft.getPicURLs().get(0));
+			}
+			
 			searchItems.add(item);
 		}
 
@@ -317,7 +404,12 @@ public class SearchResultActivity extends Activity {
 			lt.loc = city;
 
 			String title = lt.cat + " on " + lt.getLostDate();
-			item = new FPNewsListItem(title, " in " + lt.loc, 1);
+			item = new FPNewsListItem(title, " in " + lt.loc);
+			
+			if(!lt.getPicURLs().isEmpty()) {
+				item.setIcon(lt.getPicURLs().get(0));
+			}
+			
 			searchItems.add(item);
 		}
 

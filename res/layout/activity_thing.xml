@@ -74,6 +74,7 @@
         android:layout_toRightOf="@id/txtview_thingplace"
         android:padding="10dip"
         android:text="Hsinchu, Dong District, Taiwan"
+        android:paddingBottom="30dip"
         android:textSize="7pt" />
 
     <TextView
@@ -81,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/txtview_thingplace"
-        android:padding="10dip"
+        android:paddingTop="30dip"
         android:text="Have not been claimed"
         android:textSize="7pt" />
 
@@ -94,11 +95,24 @@
         android:layout_below="@+id/txtview_thingclaim"
         android:background="@color/LightBlue" >
 
-        <Gallery
-            android:id="@+id/gallery_thingpics"
-            android:layout_width="0dip"
-            android:layout_height="100dp"
-            android:layout_weight="1" />
+        <ImageView
+            android:id="@+id/imageView_thing1"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            android:src="@drawable/ic_launcher" />
+
+        <ImageView
+            android:id="@+id/imageView_thing2"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            android:src="@drawable/ic_launcher" />
+
+        <ImageView
+            android:id="@+id/imageView_thing3"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            android:src="@drawable/ic_launcher" />
+        
     </LinearLayout>
 
 </RelativeLayout>

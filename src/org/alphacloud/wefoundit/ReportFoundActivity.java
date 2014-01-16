@@ -527,7 +527,6 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener,
 			// check for success tag
 			try {
 				success = json.getInt("success");
-				success = 1;
 				if (success == 1) {
 					// successfully add report found
 					int id = json.getInt("id");
@@ -553,7 +552,7 @@ public class ReportFoundActivity extends Activity implements OnDateSetListener,
 					}
 
 				} else {
-					// failed add report found
+					Log.d("REPORT_FOUND_ERR",json.getString("message"));
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

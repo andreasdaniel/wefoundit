@@ -15,6 +15,7 @@ import org.alphacloud.wefoundit.model.FoundThing;
 import org.alphacloud.wefoundit.model.LostThing;
 import org.alphacloud.wefoundit.util.JSONParser;
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,7 +103,12 @@ public class FPLostFragment extends Fragment {
 			lt.loc = city;
 			
 			String title = lt.cat + " on " + lt.getLostDate();
-			item = new FPNewsListItem(title, " in " + lt.loc, 1);
+			item = new FPNewsListItem(title, " in " + lt.loc);
+			
+			if(!lt.getPicURLs().isEmpty()) {
+				item.setIcon(lt.getPicURLs().get(0));
+			}
+			
 			lostItems.add(item);
 		}
 		
@@ -159,6 +165,9 @@ public class FPLostFragment extends Fragment {
                         lt.setLostUser(c.getInt("lostuser"));
                         lt.setLostEmail(c.getString("lostemail"));
                         lt.setLostPhone(c.getString("lostphone"));
+                        
+                        lt.setPicURLs(getPics(lt.getLostId()));
+                        
                         ltList.add(lt);                       
                     }
 					
@@ -176,6 +185,44 @@ public class FPLostFragment extends Fragment {
 			// dismiss the dialog once done
 			pDialog.dismiss();
 			loadLostItems();
+		}
+		
+		private List<String> getPics(int id) {
+			List<String> pics = new ArrayList<String>();
+			
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("id", id+""));
+			
+			JSONObject json = jsonParser.makeHttpRequest(DbConn.PIC_LOST, "GET",
+					params);
+			
+			try {
+				int success = json.getInt("success");
+				
+				Log.d("fetch_PICs", id+": "+success+"");
+				
+				if (success == 1) {
+					// successfully get list home found
+					JSONArray found = json.getJSONArray("lostpics");
+					//ftList = new LinkedList<FoundThing>();
+					Log.d("FOUND_PIC#", found.length()+"");
+					for (int i = 0; i < found.length(); i++) {
+                        JSONObject c = found.getJSONObject(i);
+                        
+                        // Storing each json item in variable
+                        String url = c.getString("picturelostlocation");
+                        
+                        pics.add(url);                       
+                    }
+					
+				} else {
+					// failed add report found
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			return pics;
 		}
 	}
 	

@@ -12,9 +12,12 @@ import org.alphacloud.wefoundit.model.DbConn;
 import org.alphacloud.wefoundit.model.FoundThing;
 import org.alphacloud.wefoundit.util.JSONParser;
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.squareup.picasso.Picasso;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -28,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 public class FPFoundFragment extends Fragment {
@@ -103,12 +107,19 @@ public class FPFoundFragment extends Fragment {
 			//ft.loc = location.replace("null", "").replace("  ", " ");
 			
 			String title = ft.cat + " on " + ft.getFoundDate();
-			item = new FPNewsListItem(title, " in " + ft.loc, 1);
+			item = new FPNewsListItem(title, " in " + ft.loc);
+			
+			if(!ft.getPicURLs().isEmpty()) {
+				item.setIcon(ft.getPicURLs().get(0));
+			}
+			
+			Log.d("FP_ICON", item.getIcon());
+			
 			foundItems.add(item);
 		}
 		
 		adapter.notifyDataSetChanged();
-		
+		//loadimg();
 //		item = new FPNewsListItem("Bag", "Bag found in Taichung park", 1);
 //		foundItems.add(item);
 //		item = new FPNewsListItem("Smartphone", "Smartphone found in Hsinchu Station", 1);
@@ -162,6 +173,9 @@ public class FPFoundFragment extends Fragment {
                         ft.setFoundTempEmail(c.getString("foundtempemail"));
                         ft.setFoundTempPhone(c.getString("foundtempphone"));
                         ft.setFoundUser(c.getInt("founduser"));
+                        
+                        ft.setPicURLs(getPics(ft.getFoundId()));
+                        
                         ftList.add(ft);                       
                     }
 					
@@ -179,6 +193,44 @@ public class FPFoundFragment extends Fragment {
 			loadFoundItems();
 			// dismiss the dialog once done
 			pDialog.dismiss();
+		}
+		
+		private List<String> getPics(int id) {
+			List<String> pics = new ArrayList<String>();
+			
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("id", id+""));
+			
+			JSONObject json = jsonParser.makeHttpRequest(DbConn.PIC_FOUND, "GET",
+					params);
+			
+			try {
+				int success = json.getInt("success");
+				
+				Log.d("fetch_PICs", id+": "+success+"");
+				
+				if (success == 1) {
+					// successfully get list home found
+					JSONArray found = json.getJSONArray("foundpics");
+					//ftList = new LinkedList<FoundThing>();
+					Log.d("FOUND_PIC#", found.length()+"");
+					for (int i = 0; i < found.length(); i++) {
+                        JSONObject c = found.getJSONObject(i);
+                        
+                        // Storing each json item in variable
+                        String url = c.getString("picturefoundlocation");
+                        
+                        pics.add(url);                       
+                    }
+					
+				} else {
+					// failed add report found
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			return pics;
 		}
 	}
 	

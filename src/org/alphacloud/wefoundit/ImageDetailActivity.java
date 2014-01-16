@@ -2,10 +2,13 @@ package org.alphacloud.wefoundit;
 
 import org.alphacloud.wefoundit.logic.ImageHandler;
 
+import com.squareup.picasso.Picasso;
+
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,8 +38,14 @@ public class ImageDetailActivity extends Activity {
 		initCustomActionBar();
 		
 		// init image
-		Bitmap image = ImageHandler.decodeFile(imageLocation, 500, 500);
-		mImageView.setImageBitmap(image);
+		Log.d("IMAGE_DETAIL", imageLocation);
+		if(imageLocation.contains("http://")) {
+			Picasso.with(this).load(imageLocation).resize(500, 500).into(mImageView);
+		}
+		else {
+			Bitmap image = ImageHandler.decodeFile(imageLocation, 500, 500);
+			mImageView.setImageBitmap(image);
+		}
 	}
 
 	@Override

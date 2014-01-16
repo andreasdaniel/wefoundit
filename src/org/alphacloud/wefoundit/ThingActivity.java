@@ -14,6 +14,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.squareup.picasso.Picasso;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -31,6 +33,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Gallery;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,14 +45,17 @@ public class ThingActivity extends Activity {
 	private final String PARENT_KEY = "PARENT_KEY";
 	private final int FP_PARENT = 11;
 	private final int RP_PARENT = 12;
-	
+
 	private TextView mCategoryTextView;
 	private TextView mDescTextView;
 	private TextView mDateTextView;
 	private TextView mPlaceTextView;
 	private TextView mClaimTextView;
-	private Gallery mGallery;
-	
+	private ImageView mImage1;
+	private ImageView mImage2;
+	private ImageView mImage3;
+	private ImageView[] images;
+
 	private String category;
 	private String desc;
 	private String date;
@@ -57,43 +63,82 @@ public class ThingActivity extends Activity {
 	private String claim;
 	String email = "user@foundit.com";
 	String phone = "+886 988811676";
-	
-	private List<Bitmap> uploadedImages;
-	private String[] imagesLocation;
-	private ReportPhotoListAdapter galleryAdapter;
-	
+
+	//private List<Bitmap> uploadedImages;
+	private List<String> picURls;
+	//private String[] imagesLocation;
+	//private ReportPhotoListAdapter galleryAdapter;
+
 	private int parent;
-	
+
 	Parcelable parcel;
-	
+
 	private ProgressDialog pDialog;
 	private JSONParser jsonParser;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_thing);
-		
+
 		jsonParser = new JSONParser();
-		
+
 		// init fields
 		mCategoryTextView = (TextView) findViewById(R.id.txtview_thingcategory1);
 		mDescTextView = (TextView) findViewById(R.id.txtview_thingdescription1);
 		mDateTextView = (TextView) findViewById(R.id.txtview_thingdate1);
 		mPlaceTextView = (TextView) findViewById(R.id.txtview_thingplace1);
 		mClaimTextView = (TextView) findViewById(R.id.txtview_thingclaim);
-		mGallery = (Gallery) findViewById(R.id.gallery_thingpics);
+		mImage1 = (ImageView) findViewById(R.id.imageView_thing1);
+		mImage2 = (ImageView) findViewById(R.id.imageView_thing2);
+		mImage3 = (ImageView) findViewById(R.id.imageView_thing3);
+		images = new ImageView[3];
+		images[0] = mImage1;
+		images[1] = mImage2;
+		images[2] = mImage3;
+		
 		
 		getPassingArg();
 		initCustomActionBar();
-		initPictureGallery();
 		
+		mImage1.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Log.d("THING_ACTIVITY", "click event " + picURls.size());
+				if(picURls.size() >= 1) {
+					startImageDetail(0);
+				}
+			}
+		});
+
+		mImage2.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if(picURls.size() >= 2) {
+					startImageDetail(1);
+				}
+
+			}
+		});
+
+		mImage3.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if(picURls.size() >= 3) {
+					startImageDetail(2);
+				}
+
+			}
+		});
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.thing, menu);
+		// getMenuInflater().inflate(R.menu.thing, menu);
 		return true;
 	}
 
@@ -102,14 +147,19 @@ public class ThingActivity extends Activity {
 		parent = bundle.getInt(PARENT_KEY);
 		parcel = bundle.getParcelable("DATA");
 	}
-	
+
 	private void initCustomActionBar() {
-		
-		View customActionBar = getLayoutInflater().inflate(R.layout.action_bar_edit_discarddone, new LinearLayout(this), false);
-		View cancelActionView = customActionBar.findViewById(R.id.action_custombar_cancel);
-		View doneActionView = customActionBar.findViewById(R.id.action_custombar_done);
-		TextView doneTextView = (TextView) customActionBar.findViewById(R.id.txt_saveaction);
-		
+
+		View customActionBar = getLayoutInflater().inflate(
+				R.layout.action_bar_edit_discarddone, new LinearLayout(this),
+				false);
+		View cancelActionView = customActionBar
+				.findViewById(R.id.action_custombar_cancel);
+		View doneActionView = customActionBar
+				.findViewById(R.id.action_custombar_done);
+		TextView doneTextView = (TextView) customActionBar
+				.findViewById(R.id.txt_saveaction);
+
 		switch (parent) {
 		case RP_PARENT:
 			doneTextView.setText("Mark as Done");
@@ -121,19 +171,19 @@ public class ThingActivity extends Activity {
 		default:
 			break;
 		}
-		
+
 		loadData();
-		
+
 		cancelActionView.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				finish();
-				
+
 			}
 		});
 		doneActionView.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				switch (parent) {
@@ -141,14 +191,16 @@ public class ThingActivity extends Activity {
 					markAsDoneAction();
 					break;
 				case FP_PARENT:
-					FragmentTransaction ft = getFragmentManager().beginTransaction();
-					DialogFragment newFragment = new ClaimDialogFragment(email,phone);
+					FragmentTransaction ft = getFragmentManager()
+							.beginTransaction();
+					DialogFragment newFragment = new ClaimDialogFragment(email,
+							phone);
 					newFragment.show(ft, "idenity_dialog");
 					break;
 				}
 			}
 		});
-		
+
 		ActionBar ab = getActionBar();
 		ab.setDisplayShowHomeEnabled(false);
 		ab.setDisplayShowTitleEnabled(false);
@@ -157,91 +209,91 @@ public class ThingActivity extends Activity {
 	}
 
 	private void loadData() {
-		if(parcel instanceof FoundThing) {
+		if (parcel instanceof FoundThing) {
 			FoundThing ft = (FoundThing) parcel;
 			category = ft.cat;
 			desc = ft.getFoundDesc();
 			date = ft.getFoundDate();
 			place = ft.loc;
-			claim = ft.getFoundIsClaim()==0?"Have not been claimed":"Have been claimed";
+			claim = ft.getFoundIsClaim() == 0 ? "Have not been claimed"
+					: "Have been claimed";
 			email = ft.getFoundTempEmail();
 			phone = ft.getFoundTempPhone();
-		}
-		else if(parcel instanceof LostThing) {
+			if(!ft.getPicURLs().isEmpty())
+				picURls = ft.getPicURLs();
+			else
+				picURls = new ArrayList<String>();
+		} else if (parcel instanceof LostThing) {
 			LostThing lt = (LostThing) parcel;
-			
+
 			category = lt.cat;
 			desc = lt.getLostDesc();
 			date = lt.getLostDate();
 			place = lt.getLostAdd() + ", " + lt.loc;
-			claim = lt.getLostIsFound()==0?"Have not been found":"Have been found";
+			claim = lt.getLostIsFound() == 0 ? "Have not been found"
+					: "Have been found";
 			email = lt.getLostEmail();
 			phone = lt.getLostPhone();
+			if(!lt.getPicURLs().isEmpty())
+				picURls = lt.getPicURLs();
+			else
+				picURls = new ArrayList<String>();
 		}
-		
+
 		mCategoryTextView.setText(category);
 		mDescTextView.setText(desc);
 		mDateTextView.setText(date);
 		mPlaceTextView.setText(place);
 		mClaimTextView.setText(claim);
+		
+		int i = 0;
+		Log.d("THING_ACITIVY", picURls.size()+"");
+		for(String url : picURls) {
+			Picasso.with(this).load(url).resize(100, 100).into(images[i++]);
+		}
 	}
-	
+
 	private void markAsDoneAction() {
 		DialogInterface.OnClickListener dialogClickListener = new DialogClickListener();
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Do you want to mark as done?").setPositiveButton("Yes", dialogClickListener)
-		    .setNegativeButton("No", dialogClickListener).show();
+		builder.setMessage("Do you want to mark as done?")
+				.setPositiveButton("Yes", dialogClickListener)
+				.setNegativeButton("No", dialogClickListener).show();
 	}
-	
-	private class DialogClickListener implements DialogInterface.OnClickListener {
-		
+
+	private class DialogClickListener implements
+			DialogInterface.OnClickListener {
+
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			switch (which){
-	        case DialogInterface.BUTTON_POSITIVE:
-	        	new ClaimLostFound().execute();
-	            break;
+			switch (which) {
+			case DialogInterface.BUTTON_POSITIVE:
+				new ClaimLostFound().execute();
+				break;
 
-	        case DialogInterface.BUTTON_NEGATIVE:
-	            dialog.dismiss();
-	            break;
-	        }
-			
-		}
-		
-	}
-	
-	private void initPictureGallery() {
-		uploadedImages = new ArrayList<Bitmap>(MAX_PIC_NUMBER);
-		galleryAdapter = new ReportPhotoListAdapter(this, uploadedImages);
-		imagesLocation = new String[MAX_PIC_NUMBER];
-		
-		mGallery.setSpacing(10);
-		mGallery.setAdapter(galleryAdapter);
-		mGallery.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int position,
-					long id) {
-				startImageDetail(position);
-				
+			case DialogInterface.BUTTON_NEGATIVE:
+				dialog.dismiss();
+				break;
 			}
-		});
+
+		}
+
 	}
-	
+
 	private void startImageDetail(int position) {
 		Intent intent = new Intent();
 		intent.setClass(this, ImageDetailActivity.class);
 		intent.putExtra("PARENT_KEY", 11);
-		intent.putExtra("IMAGE_LOC", imagesLocation[position]);
+		intent.putExtra("IMAGE_LOC", picURls.get(position));
 		
+		Log.d("LOAD_IMAGE", picURls.get(position));
 		startActivity(intent);
 	}
-	
+
 	class ClaimLostFound extends AsyncTask<String, String, String> {
 		int success = 0;
-		
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -256,25 +308,22 @@ public class ThingActivity extends Activity {
 
 			String url = null;
 			int id = 0;
-			if(parcel instanceof FoundThing) {
+			if (parcel instanceof FoundThing) {
 				FoundThing ft = (FoundThing) parcel;
 				id = ft.getFoundId();
 				url = "http://140.113.210.89/wefoundit/claimfound.php";
-			}
-			else if(parcel instanceof LostThing) {
+			} else if (parcel instanceof LostThing) {
 				LostThing lt = (LostThing) parcel;
 				id = lt.getLostId();
 				url = "http://140.113.210.89/wefoundit/claimlost.php";
 			}
-			
-			
+
 			// Building Parameters
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("id", id + ""));
 
 			// getting JSON Object
-			JSONObject json = jsonParser.makeHttpRequest(url, "POST",
-					params);
+			JSONObject json = jsonParser.makeHttpRequest(url, "POST", params);
 
 			// check log cat from response
 			Log.d("Claiming", json.toString());
@@ -303,21 +352,20 @@ public class ThingActivity extends Activity {
 			// dismiss the dialog once done
 			pDialog.dismiss();
 			if (success == 1) {
-				if(parcel instanceof FoundThing) {
+				if (parcel instanceof FoundThing) {
 					FoundThing ft = (FoundThing) parcel;
 					ft.setFoundIsClaim(1);
-				}
-				else if(parcel instanceof LostThing) {
+				} else if (parcel instanceof LostThing) {
 					LostThing lt = (LostThing) parcel;
 					lt.setLostIsFound(1);
 				}
-				Toast.makeText(getApplicationContext(),
-	            		"Claimed", Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), "Claimed",
+						Toast.LENGTH_LONG).show();
 				finish();
 
 			} else {
-				Toast.makeText(getApplicationContext(),
-	            		"Failed to claim", Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), "Failed to claim",
+						Toast.LENGTH_LONG).show();
 			}
 		}
 	}

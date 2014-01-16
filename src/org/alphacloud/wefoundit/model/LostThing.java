@@ -1,5 +1,8 @@
 package org.alphacloud.wefoundit.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -19,6 +22,8 @@ public class LostThing implements Parcelable {
 	
 	public String loc;
 	public String cat;
+	
+	private List<String> picURLs;
 	
 	public LostThing() {
 		
@@ -112,6 +117,14 @@ public class LostThing implements Parcelable {
 		this.lostIsFound = lostIsFound;
 	}
 
+	public List<String> getPicURLs() {
+		return picURLs;
+	}
+
+	public void setPicURLs(List<String> picURLs) {
+		this.picURLs = picURLs;
+	}
+	
 	// Parcelable parts
 	public LostThing(Parcel in) {
 		lostId = in.readInt();
@@ -128,6 +141,9 @@ public class LostThing implements Parcelable {
 		
 		loc = in.readString();
 		cat = in.readString();
+		
+		picURLs = new ArrayList<String>();	
+		in.readList(picURLs, String.class.getClassLoader());
 	}
 	
 	@Override
@@ -152,6 +168,8 @@ public class LostThing implements Parcelable {
 		
 		dest.writeString(loc);
 		dest.writeString(cat);
+		
+		dest.writeList(picURLs);
 	}
 	
 	public static final Parcelable.Creator<LostThing> CREATOR = new Parcelable.Creator<LostThing>() {  
